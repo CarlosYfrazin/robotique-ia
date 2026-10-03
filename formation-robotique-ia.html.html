@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robotique &amp; Intelligence Artificielle — Formation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0d1021;
+  --panel:#161a33;
+  --panel2:#1d2340;
+  --line:#2a2f52;
+  --blue:#4f8cff;
+  --blue-dim:#2f5aa8;
+  --violet:#a56eff;
+  --text:#eef0fb;
+  --muted:#9aa0c3;
+  --ok:#52b788;
+  --bad:#e0645a;
+  --warn:#e0b34a;
+  --radius:10px;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --ink:#f4f5fb; --panel:#ffffff; --panel2:#eef0fa; --line:#dadeef;
+    --text:#161a33; --muted:#5c6184;
+  }
+}
+:root[data-theme="light"]{
+  --ink:#f4f5fb; --panel:#ffffff; --panel2:#eef0fa; --line:#dadeef;
+  --text:#161a33; --muted:#5c6184;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--ink);
+  color:var(--text);
+  font-family:'IBM Plex Sans',system-ui,sans-serif;
+  line-height:1.55;
+  min-height:100vh;
+}
+h1,h2,h3,h4{font-family:'Space Grotesk',system-ui,sans-serif; font-weight:600; letter-spacing:-0.01em; margin:0 0 .5em;}
+code,.mono,.val{font-family:'IBM Plex Mono',monospace;}
+a{color:var(--blue);}
+img,svg{max-width:100%;}
+button{font-family:inherit;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px;}
+.hidden{display:none !important;}
+
+.landing{min-height:100vh;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;padding:60px 20px;}
+.landing-grid{max-width:980px;margin:0 auto;width:100%;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;}
+@media (max-width:860px){.landing-grid{grid-template-columns:1fr;}}
+.eyebrow-tag{display:inline-flex;align-items:center;gap:8px;color:var(--blue);font-family:'IBM Plex Mono',monospace;font-size:13px;margin-bottom:18px;}
+.eyebrow-tag .dot{width:7px;height:7px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 4px rgba(79,140,255,.15);}
+.landing h1{font-size:clamp(32px,5vw,50px);line-height:1.05;margin-bottom:18px;}
+.landing p.lead{color:var(--muted);font-size:17px;max-width:52ch;margin-bottom:28px;}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--blue);color:#07122b;border:none;
+  padding:14px 26px;border-radius:8px;font-size:16px;font-weight:600;
+  cursor:pointer;transition:transform .15s ease, box-shadow .15s ease;
+}
+.btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(79,140,255,.3);}
+.btn:active{transform:translateY(0);}
+.btn.secondary{background:transparent;color:var(--text);border:1px solid var(--line);}
+.btn.ghost{background:transparent;color:var(--blue);border:1px solid var(--blue-dim);}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+.meta-row{display:flex;gap:22px;margin-top:26px;flex-wrap:wrap;color:var(--muted);font-size:14px;}
+.meta-row b{color:var(--text);display:block;font-family:'Space Grotesk';font-size:20px;}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:28px;}
+.section-pad{padding:64px 0;}
+.center{text-align:center;}
+
+.app{display:none;min-height:100vh;}
+.app.active{display:flex;}
+.sidebar{
+  width:280px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--line);
+  height:100vh;position:sticky;top:0;overflow-y:auto;padding:20px 0 90px;
+}
+.side-head{padding:0 18px 16px;border-bottom:1px solid var(--line);margin-bottom:10px;}
+.side-head .who{font-size:13px;color:var(--muted);}
+.side-head .who b{color:var(--text);}
+.progress-shell{margin-top:12px;}
+.progress-track{height:6px;background:var(--panel2);border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--violet));border-radius:4px;transition:width .4s ease;}
+.progress-label{font-size:12px;color:var(--muted);margin-top:6px;display:flex;justify-content:space-between;font-family:'IBM Plex Mono';}
+.session-block{margin-top:14px;}
+.session-title{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:6px 18px;font-family:'IBM Plex Mono';}
+.nav-item{
+  display:flex;align-items:center;gap:10px;padding:9px 18px;cursor:pointer;
+  color:var(--muted);font-size:14px;border-left:2px solid transparent;
+}
+.nav-item:hover{background:var(--panel2);color:var(--text);}
+.nav-item.active{color:var(--text);border-left-color:var(--blue);background:var(--panel2);}
+.nav-item .ico{width:16px;flex-shrink:0;text-align:center;font-size:13px;}
+.nav-item.locked{opacity:.45;cursor:not-allowed;}
+.nav-item .num{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);width:18px;}
+.main{flex:1;min-width:0;}
+.topbar{
+  position:sticky;top:0;z-index:5;background:rgba(13,16,33,.9);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--line);padding:12px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+:root[data-theme="light"] .topbar, :root:not([data-theme="dark"]) .topbar { background:rgba(244,245,251,.9); }
+.topbar .tb-title{font-size:13px;color:var(--muted);font-family:'IBM Plex Mono';}
+.hamburger{display:none;background:none;border:1px solid var(--line);color:var(--text);border-radius:6px;padding:8px 10px;cursor:pointer;}
+@media (max-width:900px){
+  .sidebar{position:fixed;left:-300px;top:0;z-index:20;transition:left .25s ease;box-shadow:0 0 40px rgba(0,0,0,.5);}
+  .sidebar.open{left:0;}
+  .hamburger{display:inline-flex;}
+  .side-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:19;}
+  .side-overlay.open{display:block;}
+}
+.content{max-width:760px;margin:0 auto;padding:40px 28px 100px;}
+.module-kicker{font-family:'IBM Plex Mono';font-size:12px;color:var(--blue);margin-bottom:10px;}
+.module-title{font-size:30px;margin-bottom:8px;}
+.module-sub{color:var(--muted);margin-bottom:32px;}
+.block{margin-bottom:34px;}
+.block h3{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--violet);font-family:'IBM Plex Mono';margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.block h3::before{content:'';width:14px;height:1px;background:var(--violet);}
+.block p{margin:0 0 12px;}
+.diagram-box{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin:14px 0;display:flex;justify-content:center;}
+.diagram-box svg{max-height:260px;}
+.diagram-cap{text-align:center;font-size:12px;color:var(--muted);margin-top:8px;font-family:'IBM Plex Mono';}
+.example-box{background:var(--panel2);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:14px 18px;margin:14px 0;font-size:15px;}
+.example-box b{color:var(--blue);}
+.exo-box{background:var(--panel);border:1px dashed var(--line);border-radius:var(--radius);padding:18px;margin:16px 0;}
+.exo-box .exo-q{font-weight:600;margin-bottom:12px;}
+.exo-choices{display:flex;flex-direction:column;gap:8px;}
+.exo-choice{
+  text-align:left;background:var(--panel2);border:1px solid var(--line);border-radius:8px;
+  padding:10px 14px;cursor:pointer;color:var(--text);font-size:14px;
+}
+.exo-choice:hover{border-color:var(--blue-dim);}
+.exo-choice.correct{border-color:var(--ok);background:rgba(82,183,136,.12);}
+.exo-choice.wrong{border-color:var(--bad);background:rgba(224,100,90,.12);}
+.exo-feedback{margin-top:12px;padding:12px 14px;border-radius:8px;font-size:14px;display:none;}
+.exo-feedback.show{display:block;}
+.exo-feedback.ok{background:rgba(82,183,136,.12);color:var(--ok);}
+.exo-feedback.bad{background:rgba(224,100,90,.12);color:#f0a49d;}
+.practice-tag{display:inline-block;font-size:11px;font-family:'IBM Plex Mono';color:var(--muted);border:1px solid var(--line);padding:2px 8px;border-radius:20px;margin-bottom:10px;}
+.material-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin:16px 0;}
+.material-card{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:12px;text-align:center;}
+.material-card svg{height:64px;}
+.material-card .mname{font-size:12px;margin-top:6px;font-weight:600;}
+.material-card .mrole{font-size:11px;color:var(--muted);margin-top:2px;}
+.nav-buttons{display:flex;justify-content:space-between;margin-top:44px;padding-top:24px;border-top:1px solid var(--line);}
+.badge{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:13px;}
+.badges-wrap{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;}
+table.cmp{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;}
+table.cmp th,table.cmp td{border:1px solid var(--line);padding:10px 12px;text-align:left;}
+table.cmp th{background:var(--panel2);font-family:'IBM Plex Mono';font-size:12px;text-transform:uppercase;color:var(--violet);}
+.mono-val{font-family:'IBM Plex Mono';background:var(--panel2);padding:2px 6px;border-radius:4px;}
+
+.trainer-wrap{display:grid;grid-template-columns:280px 1fr;gap:36px;align-items:start;}
+@media(max-width:760px){.trainer-wrap{grid-template-columns:1fr;}}
+.trainer-photo{width:100%;border-radius:12px;border:1px solid var(--line);cursor:zoom-in;object-fit:cover;aspect-ratio:4/5;}
+.skill-cat{margin-bottom:18px;}
+.skill-cat h4{font-size:14px;color:var(--blue);margin-bottom:8px;}
+.skill-badges{display:flex;flex-wrap:wrap;gap:7px;}
+.skill-badges span{background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:12.5px;}
+.trainer-msg{background:var(--panel2);border-left:3px solid var(--violet);padding:16px 20px;border-radius:0 8px 8px 0;margin-top:20px;font-style:italic;}
+.trainer-sig{margin-top:10px;font-style:normal;font-weight:600;color:var(--text);}
+.exp-item{display:flex;gap:14px;margin-bottom:16px;}
+.exp-ico{font-size:20px;flex-shrink:0;}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:100;padding:30px;}
+.lightbox.open{display:flex;}
+.lightbox img{max-height:90vh;border-radius:8px;}
+
+.reg-form{max-width:420px;margin:0 auto;}
+.reg-form label{display:block;font-size:13px;color:var(--muted);margin-bottom:8px;}
+.reg-form input{
+  width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);
+  padding:13px 14px;border-radius:8px;font-size:15px;margin-bottom:16px;
+}
+.reg-form input:focus{outline:none;border-color:var(--blue);}
+
+.pause-screen{max-width:520px;margin:80px auto;text-align:center;}
+.pause-icon{font-size:44px;margin-bottom:14px;}
+
+.rev-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:640px){.rev-grid{grid-template-columns:1fr;}}
+.rev-card{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:16px;}
+.rev-card h4{margin:0 0 8px;font-size:14px;color:var(--blue);}
+.rev-card ul{margin:0;padding-left:18px;font-size:14px;}
+.rev-card li{margin-bottom:5px;}
+
+.quiz-progress{display:flex;gap:4px;margin-bottom:24px;flex-wrap:wrap;}
+.quiz-dot{width:10px;height:10px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);}
+.quiz-dot.answered{background:var(--blue);border-color:var(--blue);}
+.quiz-dot.current{box-shadow:0 0 0 3px rgba(79,140,255,.25);}
+.quiz-q-num{font-family:'IBM Plex Mono';color:var(--muted);font-size:13px;margin-bottom:10px;}
+.result-hero{text-align:center;padding:40px 20px;}
+.result-score{font-family:'Space Grotesk';font-size:64px;margin:10px 0;}
+.result-score.pass{color:var(--ok);}
+.result-score.fail{color:var(--bad);}
+.topic-tags{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:16px;}
+.topic-tags span{background:rgba(224,100,90,.12);color:#f0a49d;border-radius:20px;padding:5px 12px;font-size:13px;}
+
+.sync-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);font-family:'IBM Plex Mono';}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);}
+.sync-dot.ok{background:var(--ok);}
+.sync-dot.off{background:var(--warn);}
+
+.admin-table{width:100%;border-collapse:collapse;font-size:13px;}
+.admin-table th,.admin-table td{border:1px solid var(--line);padding:8px 10px;text-align:left;}
+.admin-table th{background:var(--panel2);font-family:'IBM Plex Mono';font-size:11px;text-transform:uppercase;color:var(--violet);}
+.admin-table tr:nth-child(even){background:rgba(255,255,255,.02);}
+.admin-lock{max-width:420px;margin:100px auto;text-align:center;}
+
+::-webkit-scrollbar{width:9px;}
+::-webkit-scrollbar-track{background:var(--ink);}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:5px;}
+@media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important;}}
+</style>
+</head>
+<body>
+
+<div id="view-landing" class="view">
+  <div class="landing">
+    <div class="landing-grid">
+      <div>
+        <div class="eyebrow-tag"><span class="dot"></span>FORMATION COMPLÈTE · EN LIGNE</div>
+        <h1>Robotique &amp; Intelligence Artificielle</h1>
+        <p class="lead">Découvrez les fondements de la robotique moderne et de l'intelligence artificielle, à votre rythme, à travers 16 modules progressifs, des exercices pratiques et un quiz final.</p>
+        <button class="btn" onclick="App.goTrainer()">Commencer ma formation</button>
+        <div class="meta-row">
+          <div><b>16 modules</b>en 4 sessions</div>
+          <div><b>75%</b>requis au quiz final</div>
+          <div><b>2 essais</b>possibles</div>
+        </div>
+      </div>
+      <div class="hero-art" id="hero-art"></div>
+    </div>
+  </div>
+</div>
+
+<div id="view-trainer" class="view hidden">
+  <div class="wrap section-pad">
+    <div class="module-kicker" style="text-align:center;">À PROPOS DE VOTRE FORMATEUR</div>
+    <div class="trainer-wrap panel" style="margin-top:14px;">
+      <div>
+        <img class="trainer-photo" id="trainer-photo" src="" alt="Carlos Yfrazin" onclick="App.openLightbox()">
+      </div>
+      <div>
+        <h2 style="margin-bottom:2px;">Carlos Yfrazin</h2>
+        <p style="color:var(--blue);font-weight:600;margin-top:0;margin-bottom:16px;">Ingénieur Électricien · Formateur en Robotique &amp; Intelligence Artificielle</p>
+        <p>Carlos Yfrazin est ingénieur électricien, avec son cycle d'études terminé à l'Université Quisqueya et son projet de fin d'études en cours. Il poursuit également des études en génie chimique à la Faculté des Sciences de l'Université d'État d'Haïti (UEH).</p>
+        <p>Certifié en Data Science &amp; Intelligence Artificielle (Akademi × Flatiron), il est aussi Mentor en Robotique &amp; IA chez HART'S Haiti Inc. (programme Mobile Maker Lab), où il forme des jeunes à l'utilisation du Raspberry Pi, de l'Arduino, de l'ESP32, du BBC micro:bit et de MakeCode.</p>
+        <div class="badges-wrap">
+          <span class="badge">🤖 Robotique</span><span class="badge">🧠 Intelligence Artificielle</span><span class="badge">⚡ Ingénierie électrique</span>
+          <span class="badge">🔌 Arduino · ESP32 · Raspberry Pi</span><span class="badge">🐍 Python</span>
+          <span class="badge">📊 Data Science</span><span class="badge">🎓 Mentorat HART'S Haiti</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:20px;">
+      <h3 style="text-transform:uppercase;font-size:13px;letter-spacing:.05em;color:var(--violet);font-family:'IBM Plex Mono';margin-bottom:18px;">🎓 Mentorat &amp; Transmission</h3>
+      <div class="exp-item"><div class="exp-ico">🤖</div><div><b>Mentor Robotique &amp; IA — HART'S Haiti Inc.</b><br>Dans le cadre du programme Mobile Maker Lab, Carlos Yfrazin forme des jeunes de 15 à 18 ans à la robotique et à la programmation, à travers le Raspberry Pi, l'Arduino, l'ESP32, le BBC micro:bit et MakeCode.</div></div>
+      <div class="exp-item" style="margin-bottom:0;"><div class="exp-ico">🎓</div><div><b>Mentor — Caribbean Startup Bootcamp</b><br>Carlos Yfrazin a également participé comme mentor au Caribbean Startup Bootcamp, dans le cadre présenté par Founder Institute Caribbean / Conecta Caribbean.</div></div>
+    </div>
+
+    <div class="trainer-msg">
+      « Bienvenue dans cette formation en Robotique &amp; Intelligence Artificielle. Vous allez découvrir comment un robot perçoit, décide et agit — et comment l'intelligence artificielle transforme aujourd'hui ces machines en systèmes capables d'apprendre. Prenez le temps de bien comprendre chaque notion : c'est la base de tous les projets que nous construirons ensemble par la suite. »
+      <div class="trainer-sig">— Carlos Yfrazin<br><span style="font-weight:400;color:var(--muted);font-size:13px;">Ingénieur Électricien | Formateur en Robotique &amp; Intelligence Artificielle</span></div>
+    </div>
+
+    <div class="center" style="margin-top:32px;">
+      <button class="btn" onclick="App.goRegister()">Commencer le cours →</button>
+    </div>
+  </div>
+</div>
+
+<div id="view-register" class="view hidden">
+  <div class="wrap section-pad">
+    <div class="panel reg-form">
+      <div class="module-kicker">ÉTAPE 1 · IDENTIFICATION</div>
+      <h2>Avant de commencer</h2>
+      <p style="color:var(--muted);margin-bottom:24px;">Entrez votre nom complet pour créer votre profil et enregistrer votre progression.</p>
+      <label for="reg-name">Nom complet</label>
+      <input id="reg-name" type="text" placeholder="Ex. Jean-Michel Pierre" autocomplete="name">
+      <button class="btn" style="width:100%;justify-content:center;" onclick="App.register()">Créer mon profil</button>
+    </div>
+  </div>
+</div>
+
+<div id="app" class="app">
+  <div class="side-overlay" id="side-overlay" onclick="App.toggleSidebar(false)"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="side-head">
+      <div class="who">Bienvenue, <b id="side-name">—</b></div>
+      <div class="progress-shell">
+        <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+        <div class="progress-label"><span id="progress-pct">0%</span><span class="sync-pill"><span class="sync-dot" id="sync-dot"></span><span id="sync-text">local</span></span></div>
+      </div>
+    </div>
+    <div id="nav-container"></div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="hamburger" onclick="App.toggleSidebar(true)">☰</button>
+      <div class="tb-title" id="tb-title">Robotique &amp; Intelligence Artificielle</div>
+      <button class="btn ghost" style="padding:6px 12px;font-size:12px;" onclick="App.toggleTheme()">☾/☀</button>
+    </div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img id="lightbox-img" src=""></div>
+
+<script>
+window.TRAINER_PHOTO_B64 = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRINDQoOFRIWFhUSFBQXGiEcFxgfGRQUHScdHyIjJSUlFhwpLCgkKyEkJST/2wBDAQYGBgkICREJCREkGBQYJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCT/wAARCALuAlgDASIAAhEBAxEB/8QAHQABAAEFAQEBAAAAAAAAAAAAAAYBAgQFBwMICf/EAGAQAAEDAwIDBAUIBAYNCgQEBwEAAgMEBREGIQcSMRNBUWEUInGBkQgVMkJSU5KhI2KxwTNygqKy0RYXGCQ0N0Njc7PC0uElNTZEVmR0k5TwdYOE8SY4RqMnVWV2tMPi/8QAGwEBAAIDAQEAAAAAAAAAAAAAAAEDAgQFBgf/xAA4EQACAQIEBAEKBQUBAQEAAAAAAQIDEQQSITEFE0FRoRQVIjJhYnGBkfAGUrHB0TNCU+HxI0MW/9oADAMBAAIRAxEAPwDkiIi1zzQREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBEU34fcIdRcQw6pomxUduY4sdW1OeUuHUMaN3H8h4olcyjBydoohCLu1f8lW4R0pfb9T0tRUAfwc1KY2k+HMHOx8Fxi+2O4aau1TabrT+j1lM7lkj5g7G2QQRsQQQR7VLTW5nUozp+sjAREUFQREQBERAERbCfT94pbZHdJ7VXRW+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eVgb15hnplaP+5WpP+1NR/6Nv+8u8It+HE8VCKjGei9i/g05YDDybk46v4nCP7lim5OT+yuq5c55fRG4z445lT+5WpP+1NR/6Nv+8u8IsvOuL/P4L+CPN2H/AC/qcg0d8nqn0jqagvrNQTVTqN5eIXUzWh+WlvXm26rr6ItWvialeWaq7s2KNCFFZaasgiIqC0K10bH8vMxruU8wyM4PirkQBERAEREAREQBY9wt1LdKZ1NWQtmicQcHIII6EEbgjuI3CyEQhpNWZozY7tDyspdSVjYW/VnhjlcB4c5AJ9+Srv7EqCoLn3R012mc0t7SsIdyA9eRoAaw+bQD5rdIosV8mHVX+Oppm2GsgBZS3+5RxfVZII5i32Oe0uPvJWhq6Y1FDPQV88txibfIISarDi5p7I4IAAxknYBTdaObSrJbi6r+c65sLqplY6lAj7MyNDQN+Tmx6o25kaKqtHS0V4lzdM9iOWjvF2pIx0jbM2RrR4DtGuIHvXtSaco6eqbWTPqK6qZns5quUyGPPXlH0W+0AFbREsXKjBdAiIpLDxraKmuVJNR1kEc9POwxyRSNy17T1BC4Hq75L8j6qSo0rdIY4HHIpK7m9TybIAcj2j3r6CRW0q06b9FlFbD06ytNHD+F/B3WGi23uZ1xt1HWVtMylp5Yy6YRevl0mMDLgPojxO66ToTh7aNA0MkNAJKirqHc9VWznmmqHeJPcMk7efjupOimpXnO9+opYaFO2XoYlfZ7bdeT5wt9JWdnnk9IhbJy564yDjoF41WmrHXTGeqs1tqJnAAyS0zHOIAwNyPDZbFFSXmLQ2m32sObQUFLSB30hBE2MH24AXnX2C0XWVs1wtVBWStbyh89OyRwHhkjpus5EBrabTFiopmz0tltkErTlskVKxrh7CAtkiICxsMbJHyNY0PfjmcBu7HTKsqaGlrCw1NNDOY8lnaMDuXOxxnovZEB5Ckp2uY4QRAx/QIYPV9ngro6eGJ5fHFGxzhglrQCVeiAtMMbpBIY2F42DiBn4qwUlOCSIIgXHmPqDc+K9UQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREAREQBERAEREB//Z";
+window.MODULES = [
+{
+  id:'m1', session:1, sessionLabel:'Session 1 · Fondements de la robotique', num:1,
+  title:"Qu'est-ce qu'un robot ? Histoire et domaines d'application", navTitle:"Qu'est-ce qu'un robot ?",
+  quoi:`Un robot est une machine capable de percevoir son environnement (grâce à des capteurs), de prendre une décision (grâce à un programme ou un contrôleur), puis d'agir physiquement sur le monde (grâce à des actionneurs). C'est cette boucle "percevoir → décider → agir" qui distingue un robot d'une simple machine automatique.`,
+  aquoi:`Comprendre cette définition évite de confondre un robot avec n'importe quel objet mécanique ou électronique : un ventilateur qui tourne n'est pas un robot, mais un ventilateur qui détecte une présence et s'oriente automatiquement vers elle commence à en être un.`,
+  comment:`La robotique est née dans l'industrie dans les années 1960, pour automatiser des tâches répétitives et dangereuses (soudure, peinture, manutention). Depuis, le domaine s'est étendu bien au-delà de l'usine : robots médicaux, drones, robots d'exploration spatiale, robots domestiques, et aujourd'hui robots dotés d'intelligence artificielle capables de s'adapter à des situations nouvelles.`,
+  diagrams:[{key:'roboTimeline', caption:"De la robotique industrielle à l'IA embarquée"}],
+  example:`<b>Exemple</b> — Un bras robotisé dans une usine automobile soude des centaines de points identiques chaque jour : c'est un robot industriel classique, programmé pour une tâche précise et répétitive.`,
+  exercise:{question:"Qu'est-ce qui distingue un robot d'une simple machine automatique ?", options:["Un robot est toujours plus gros", "Un robot perçoit, décide et agit, pas seulement une action répétée sans adaptation", "Un robot n'a jamais besoin d'électricité", "Un robot ressemble toujours à un humain"], correct:1, explanation:"La boucle percevoir-décider-agir est ce qui définit un robot, au-delà de la simple répétition mécanique."},
+  practice:`Tout au long de cette formation, vous apprendrez à construire chacun des trois maillons de cette boucle : les capteurs (percevoir), la logique/l'IA (décider), et les actionneurs (agir).`
+},
+{
+  id:'m2', session:1, sessionLabel:'Session 1 · Fondements de la robotique', num:2,
+  title:"Classification des robots", navTitle:"Classification des robots",
+  quoi:`Les robots se classent généralement selon leur mobilité (fixes ou mobiles) et selon leur domaine d'usage (industriel, de service, médical, militaire, d'exploration, éducatif). Un robot fixe reste ancré à un poste de travail ; un robot mobile se déplace dans son environnement.`,
+  aquoi:`Cette classification aide à choisir la bonne architecture dès la conception d'un projet : un robot qui doit explorer une pièce n'a pas les mêmes besoins (roues, capteurs de distance) qu'un bras qui assemble des pièces sur une chaîne.`,
+  comment:`Les robots industriels (bras fixes) dominent encore en nombre dans le monde, mais la catégorie des robots de service (mobiles, souvent destinés au grand public ou à des tâches d'assistance) connaît la croissance la plus rapide, portée par les progrès de l'intelligence artificielle.`,
+  diagrams:[],
+  example:`<b>Exemple</b> — Un bras robotisé de soudure (fixe, industriel) et un robot aspirateur autonome (mobile, de service) sont tous deux des robots, mais répondent à des besoins et des contraintes de conception très différents.`,
+  exercise:{question:"Quelle est la différence principale entre un robot fixe et un robot mobile ?", options:["Le robot fixe n'a pas de capteurs", "Le robot mobile peut se déplacer dans son environnement, le robot fixe reste à un poste", "Le robot mobile est toujours plus intelligent", "Il n'y a aucune différence"], correct:1, explanation:"Un robot fixe reste ancré à un poste de travail ; un robot mobile se déplace, ce qui change entièrement sa conception (roues, navigation, autonomie énergétique)."},
+  practice:`Avant de démarrer un projet robotique, vous vous poserez toujours cette première question : mon robot doit-il se déplacer, ou rester à un poste fixe ?`
+},
+{
+  id:'m3', session:1, sessionLabel:'Session 1 · Fondements de la robotique', num:3,
+  title:"Anatomie d'un robot : actionneurs, capteurs, contrôleur, effecteurs", navTitle:"Anatomie d'un robot",
+  quoi:`Tout robot, quelle que soit sa forme, se compose de quatre familles d'éléments : le <b>contrôleur</b> (le cerveau, souvent un microcontrôleur ou un ordinateur), les <b>capteurs</b> (les sens, qui perçoivent l'environnement), les <b>actionneurs</b> (les muscles, qui produisent le mouvement), et les <b>effecteurs</b> (les "mains", la partie qui interagit directement avec l'objet ou l'environnement, comme une pince).`,
+  aquoi:`Décomposer un robot selon ces quatre familles permet de diagnostiquer rapidement un problème : si le robot ne réagit pas, est-ce le capteur qui ne détecte rien, le contrôleur qui ne traite pas l'information, ou l'actionneur qui ne bouge pas ?`,
+  comment:`L'information circule dans un sens précis : le capteur mesure une grandeur physique, l'envoie au contrôleur qui applique une logique (un programme), puis le contrôleur commande l'actionneur, qui à son tour peut déplacer un effecteur.`,
+  diagrams:[{key:'robotAnatomy', caption:"Les quatre familles d'éléments d'un robot"}],
+  example:`<b>Exemple</b> — Un robot suiveur de ligne : un capteur optique détecte la ligne noire (perception), le microcontrôleur calcule de quel côté corriger (décision), puis les moteurs des roues tournent en conséquence (action).`,
+  exercise:{question:"Dans un robot, quel élément joue le rôle du 'cerveau' ?", options:["L'effecteur", "Le capteur", "Le contrôleur", "L'actionneur"], correct:2, explanation:"Le contrôleur traite l'information reçue des capteurs et décide quelle commande envoyer aux actionneurs."},
+  practice:`Lorsque vous construirez vos premiers robots, vous identifierez systématiquement ces quatre familles sur votre propre montage avant même de commencer à câbler.`
+},
+{
+  id:'m4', session:1, sessionLabel:'Session 1 · Fondements de la robotique', num:4,
+  title:"Degrés de liberté et types d'articulations", navTitle:"Degrés de liberté",
+  quoi:`Un <b>degré de liberté</b> (DDL) est une direction indépendante dans laquelle une partie du robot peut se déplacer (une rotation ou une translation). Chaque articulation d'un bras robotique ajoute généralement un degré de liberté supplémentaire.`,
+  aquoi:`Le nombre de degrés de liberté détermine ce qu'un robot peut physiquement accomplir : plus il y a de DDL, plus les mouvements possibles sont complexes et précis, mais plus le robot est aussi coûteux et difficile à programmer.`,
+  comment:`Une articulation peut être <b>rotoïde</b> (elle tourne, comme un coude) ou <b>prismatique</b> (elle coulisse en ligne droite, comme un tiroir). Un bras humain possède environ 7 degrés de liberté rien qu'au niveau de l'épaule, du coude et du poignet.`,
+  diagrams:[{key:'dofArm', caption:"Un bras à plusieurs degrés de liberté"}],
+  example:`<b>Exemple</b> — Un bras robotique à 6 DDL (standard dans l'industrie) peut positionner son effecteur à n'importe quel endroit de son espace de travail, selon n'importe quelle orientation.`,
+  exercise:{question:"Qu'est-ce qu'un degré de liberté (DDL) dans un robot ?", options:["Le poids total du robot", "Une direction indépendante de mouvement possible", "La vitesse maximale du robot", "Le nombre de capteurs installés"], correct:1, explanation:"Un degré de liberté correspond à une direction de mouvement indépendante — rotation ou translation — que le robot peut réaliser."},
+  practice:`Quand vous choisirez un servomoteur pour un projet, vous saurez qu'il fournit un seul degré de liberté (une rotation) — il en faudra donc plusieurs pour un bras complet.`
+},
+{
+  id:'m5', session:2, sessionLabel:'Session 2 · Composants et perception', num:5,
+  title:"Les grands types de manipulateurs industriels", navTitle:"Types de manipulateurs",
+  quoi:`Les bras robotiques industriels se regroupent en quelques grandes familles selon la forme de leur espace de travail : <b>cartésien</b> (mouvements en ligne droite sur 3 axes), <b>cylindrique</b>, <b>sphérique</b>, <b>SCARA</b> (bras articulé horizontal, rapide et précis pour l'assemblage), et <b>anthropomorphe</b> (qui imite l'articulation du bras humain, le plus polyvalent).`,
+  aquoi:`Chaque type convient mieux à certaines tâches : le SCARA excelle en assemblage rapide sur un plan horizontal, l'anthropomorphe est préféré quand il faut atteindre des positions complexes dans toutes les directions.`,
+  comment:`La forme du bras détermine la forme de son "espace de travail" (le volume accessible par son effecteur). Choisir le bon type de manipulateur, c'est faire correspondre cet espace de travail à la tâche à accomplir.`,
+  diagrams:[],
+  materials:[{key:'manipTypes', name:'Cartésien / Cylindrique / Sphérique', role:'Mouvements simples sur des axes dédiés'}, {key:'scara', name:'SCARA', role:'Rapide, assemblage horizontal'}, {key:'anthropo', name:'Anthropomorphe', role:'Le plus polyvalent, imite le bras humain'}],
+  example:`<b>Exemple</b> — Les lignes de montage électronique utilisent presque toujours des robots SCARA, car ils sont rapides et précis pour placer des composants sur un circuit imprimé plat.`,
+  exercise:{question:"Pour quelle tâche un robot SCARA est-il particulièrement adapté ?", options:["L'exploration spatiale", "L'assemblage rapide et précis sur un plan horizontal", "La navigation sous-marine", "La reconnaissance vocale"], correct:1, explanation:"Le SCARA est conçu pour des mouvements rapides et précis sur un plan horizontal, idéal pour l'assemblage industriel."},
+  practice:`Face à un nouveau projet de bras robotique, vous commencerez par dessiner l'espace de travail nécessaire avant de choisir le type de manipulateur le plus adapté.`
+},
+{
+  id:'m6', session:2, sessionLabel:'Session 2 · Composants et perception', num:6,
+  title:"Capteurs robotiques", navTitle:"Capteurs robotiques",
+  quoi:`Les capteurs sont les "sens" d'un robot. On distingue notamment les capteurs de <b>distance</b> (ultrason, infrarouge), les capteurs <b>visuels</b> (caméras), les centrales inertielles <b>IMU</b> (mesurent orientation et accélération), et les <b>encodeurs</b> (mesurent la rotation précise d'un moteur).`,
+  aquoi:`Sans capteurs, un robot ne peut qu'exécuter une séquence aveugle de mouvements ; avec des capteurs, il peut réagir à un environnement changeant — s'arrêter devant un obstacle, suivre une trajectoire, reconnaître un objet.`,
+  comment:`Chaque capteur transforme une grandeur physique (distance, lumière, accélération, angle) en un signal électrique que le contrôleur peut lire et interpréter. Le choix du capteur dépend directement de l'information dont le robot a besoin pour sa tâche.`,
+  diagrams:[{key:'sensorArray', caption:"Les principaux capteurs robotiques"}],
+  example:`<b>Exemple</b> — Un robot mobile utilise un capteur à ultrason pour mesurer la distance à un mur devant lui, et un encodeur sur chaque roue pour savoir précisément quelle distance il a parcourue.`,
+  exercise:{question:"À quoi sert un encodeur sur un moteur de robot ?", options:["À alimenter le moteur en courant", "À mesurer précisément la rotation du moteur", "À détecter la lumière ambiante", "À faire du son"], correct:1, explanation:"Un encodeur mesure la rotation (angle ou vitesse) d'un axe moteur, ce qui permet de connaître précisément la position ou la distance parcourue."},
+  practice:`Pour chaque robot que vous construirez, vous vous demanderez d'abord : quelle information l'environnement doit-il me fournir, et quel capteur peut me la donner ?`
+},
+{
+  id:'m7', session:2, sessionLabel:'Session 2 · Composants et perception', num:7,
+  title:"Actionneurs (moteurs DC, servos, pas-à-pas)", navTitle:"Actionneurs",
+  quoi:`Les actionneurs transforment un signal électrique en mouvement. Le <b>moteur DC</b> tourne en continu et sert surtout à la propulsion. Le <b>servomoteur</b> se positionne sur un angle précis, idéal pour une articulation. Le <b>moteur pas-à-pas</b> avance par petits incréments très précis et répétables, parfait pour un positionnement exact.`,
+  aquoi:`Le choix de l'actionneur dépend du mouvement recherché : rotation continue rapide (DC), position angulaire précise (servo), ou déplacement incrémental très contrôlé (pas-à-pas).`,
+  comment:`Un servomoteur reçoit un signal PWM qui indique l'angle à atteindre, puis maintient cette position activement. Un moteur pas-à-pas, lui, avance d'un angle fixe à chaque impulsion électrique reçue, ce qui permet de compter précisément le nombre de pas effectués.`,
+  diagrams:[],
+  materials:[{key:'dcMotorIcon', name:'Moteur DC', role:'Rotation continue, propulsion'}, {key:'servoIcon', name:'Servomoteur', role:'Angle précis, articulation'}, {key:'stepperIcon', name:'Moteur pas-à-pas', role:'Déplacement incrémental précis'}],
+  example:`<b>Exemple</b> — Les roues d'un robot mobile sont souvent entraînées par des moteurs DC, tandis que son "cou" qui oriente une caméra utilise un servomoteur pour viser un angle précis.`,
+  exercise:{question:"Quel actionneur choisiriez-vous pour positionner un bras robotique sur un angle exact ?", options:["Un moteur DC seul", "Un servomoteur", "Un buzzer", "Une LED"], correct:1, explanation:"Le servomoteur est conçu pour atteindre et maintenir un angle précis, contrairement au moteur DC qui tourne simplement en continu."},
+  practice:`Pour vos projets de bras robotique, vous utiliserez principalement des servomoteurs ; pour un robot mobile, plutôt des moteurs DC sur les roues.`
+},
+{
+  id:'m8', session:2, sessionLabel:'Session 2 · Composants et perception', num:8,
+  title:"Robots mobiles et navigation de base", navTitle:"Robots mobiles & navigation",
+  quoi:`Un robot mobile doit résoudre un problème que les bras fixes n'ont pas : se déplacer sans se perdre ni heurter d'obstacle. Deux comportements de base sont le <b>suivi de ligne</b> (le robot suit un tracé au sol) et l'<b>évitement d'obstacle</b> (le robot détecte un objet et modifie sa trajectoire).`,
+  aquoi:`Ces deux comportements sont les briques de base de presque tous les robots mobiles plus complexes, des robots-aspirateurs aux véhicules autonomes.`,
+  comment:`Le suivi de ligne utilise généralement des capteurs optiques sous le robot, qui détectent le contraste entre la ligne et le sol. L'évitement d'obstacle utilise un capteur de distance à l'avant : si la distance mesurée devient trop faible, le robot s'arrête ou change de direction.`,
+  diagrams:[{key:'lineFollow', caption:"Suivi de ligne"}, {key:'obstacleAvoid', caption:"Évitement d'obstacle"}],
+  example:`<b>Exemple</b> — Un petit robot éducatif équipé de deux capteurs infrarouges sous le châssis peut suivre une ligne noire tracée sur une feuille blanche en corrigeant sa direction en permanence.`,
+  exercise:{question:"Comment un robot détecte-t-il généralement qu'il doit éviter un obstacle ?", options:["Il mesure la température de la pièce", "Il mesure la distance avec un capteur, et réagit si elle devient trop faible", "Il écoute un son spécifique", "Il n'a aucun moyen de le détecter"], correct:1, explanation:"Un capteur de distance (souvent à ultrason) mesure l'espace devant le robot ; en dessous d'un seuil, le robot déclenche une manœuvre d'évitement."},
+  practice:`Le suivi de ligne et l'évitement d'obstacle seront vos deux premiers programmes de navigation à réaliser sur un robot mobile réel.`
+},
+{
+  id:'m9', session:3, sessionLabel:'Session 3 · Programmation & IA', num:9,
+  title:"Programmer un robot : du bloc visuel au code", navTitle:"Programmer un robot",
+  quoi:`On peut programmer un robot à différents niveaux d'abstraction : par <b>blocs visuels</b> (MakeCode, Scratch — on assemble des blocs comme des puzzles), en <b>C/C++</b> (Arduino — plus proche du matériel), ou en <b>Python</b> (plus lisible, très utilisé en intelligence artificielle, notamment sur Raspberry Pi).`,
+  aquoi:`Débuter par les blocs visuels permet de comprendre la logique de programmation (conditions, boucles, variables) sans se soucier de la syntaxe, avant de passer progressivement à un vrai langage de programmation.`,
+  comment:`Ces trois approches partagent la même logique de fond : lire un capteur, prendre une décision (souvent avec un "si...alors"), commander un actionneur, et recommencer en boucle. Seule la façon d'écrire cette logique change.`,
+  diagrams:[{key:'progBlocks', caption:"MakeCode → Arduino → Python"}],
+  example:`<b>Exemple</b> — "Si la distance mesurée est inférieure à 10 cm, alors tourner à droite" peut s'écrire avec des blocs MakeCode, en Arduino (if (distance < 10) { tourner(); }), ou en Python (if distance < 10: tourner()) — la logique reste identique.`,
+  exercise:{question:"Qu'est-ce qui reste identique, que l'on programme par blocs ou en code textuel ?", options:["Rien, tout change", "La logique de base : lire, décider, agir", "La couleur de l'écran", "Le prix du robot"], correct:1, explanation:"Quel que soit le langage ou l'outil utilisé, la logique de fond — percevoir, décider, agir — reste la même."},
+  practice:`Vous commencerez vos premiers programmes de robot avec MakeCode, puis évoluerez vers Arduino et Python à mesure que vos projets deviendront plus complexes.`
+},
+{
+  id:'m10', session:3, sessionLabel:'Session 3 · Programmation & IA', num:10,
+  title:"Qu'est-ce que l'intelligence artificielle ?", navTitle:"Qu'est-ce que l'IA ?",
+  quoi:`L'<b>intelligence artificielle</b> (IA) désigne les systèmes capables d'accomplir des tâches qui nécessitent normalement l'intelligence humaine (reconnaître une image, comprendre une phrase, prendre une décision). Le <b>Machine Learning</b> (apprentissage automatique) est une sous-catégorie de l'IA où le système apprend à partir de données plutôt que d'être programmé règle par règle. Le <b>Deep Learning</b> est lui-même une sous-catégorie du Machine Learning, basée sur des réseaux de neurones à plusieurs couches.`,
+  aquoi:`Comprendre cette hiérarchie évite la confusion courante entre ces trois termes, souvent utilisés à tort comme synonymes dans les médias.`,
+  comment:`Un programme classique suit des règles écrites explicitement par un développeur. Un système de Machine Learning, lui, analyse de nombreux exemples (des données) pour découvrir lui-même les règles ou motifs qui permettent de faire une prédiction.`,
+  diagrams:[{key:'aiMlDl', caption:"IA ⊃ Machine Learning ⊃ Deep Learning"}],
+  example:`<b>Exemple</b> — Un thermostat qui coupe le chauffage à 20°C suit une règle fixe (programmation classique) ; un système qui apprend vos habitudes de confort au fil des semaines pour ajuster automatiquement la température relève du Machine Learning.`,
+  exercise:{question:"Quelle affirmation décrit correctement la relation entre IA, Machine Learning et Deep Learning ?", options:["Ce sont trois domaines complètement séparés", "Le Deep Learning est une sous-catégorie du Machine Learning, qui est lui-même une sous-catégorie de l'IA", "L'IA est une sous-catégorie du Deep Learning", "Ce sont des synonymes exacts"], correct:1, explanation:"L'IA est le domaine le plus large ; le Machine Learning en est une approche ; le Deep Learning est une technique particulière de Machine Learning basée sur les réseaux de neurones."},
+  practice:`Dans vos projets robotiques, vous distinguerez clairement une logique "si...alors" classique d'un vrai comportement appris à partir de données — les deux sont utiles, mais différents.`
+},
+{
+  id:'m11', session:3, sessionLabel:'Session 3 · Programmation & IA', num:11,
+  title:"Comment une machine apprend", navTitle:"Comment une machine apprend",
+  quoi:`Un système de Machine Learning apprend en suivant un cycle en quatre étapes : rassembler des <b>données</b>, les utiliser pour l'<b>entraînement</b> (le système ajuste ses paramètres internes pour minimiser ses erreurs), obtenir un <b>modèle</b> entraîné, puis utiliser ce modèle pour faire des <b>prédictions</b> sur de nouvelles données jamais vues auparavant.`,
+  aquoi:`Comprendre ce cycle démystifie l'IA : ce n'est pas de la magie, c'est un processus statistique qui repose entièrement sur la qualité et la quantité des données fournies.`,
+  comment:`Pendant l'entraînement, le modèle compare ses prédictions aux bonnes réponses connues (sur des données d'exemple), mesure son erreur, puis ajuste légèrement ses paramètres internes pour réduire cette erreur — et répète ce processus des milliers de fois.`,
+  diagrams:[{key:'mlPipeline', caption:"Le cycle du Machine Learning"}],
+  example:`<b>Exemple</b> — Pour apprendre à un robot à reconnaître une pomme, on lui montre des centaines de photos de pommes (données), il ajuste son modèle interne (entraînement), puis il peut reconnaître une pomme qu'il n'a jamais vue (prédiction).`,
+  exercise:{question:"Que se passe-t-il concrètement pendant la phase 'd'entraînement' d'un modèle ?", options:["Le modèle est simplement copié sur un disque dur", "Le modèle ajuste ses paramètres internes pour réduire ses erreurs sur les données d'exemple", "Rien, l'entraînement est juste un nom marketing", "Le modèle efface toutes les données"], correct:1, explanation:"L'entraînement est un processus itératif où le modèle ajuste ses paramètres pour réduire l'écart entre ses prédictions et les réponses attendues."},
+  practice:`Si vous construisez un jour un petit système de reconnaissance d'objets pour un robot, vous saurez qu'il vous faudra d'abord rassembler suffisamment d'exemples avant tout entraînement.`
+},
+{
+  id:'m12', session:3, sessionLabel:'Session 3 · Programmation & IA', num:12,
+  title:"Vision par ordinateur", navTitle:"Vision par ordinateur",
+  quoi:`La vision par ordinateur est la branche de l'IA qui permet à une machine d'interpréter des images ou vidéos : détecter un objet, reconnaître une couleur, lire du texte, ou identifier un visage.`,
+  aquoi:`C'est l'un des sens les plus puissants qu'on puisse donner à un robot — elle lui permet de réagir à ce qu'il "voit" plutôt qu'à une simple mesure de distance.`,
+  comment:`Une image est d'abord une grille de pixels (valeurs numériques de couleur). Un modèle de vision par ordinateur (souvent un réseau de neurones) analyse ces valeurs pour repérer des motifs caractéristiques (contours, formes, textures) correspondant à l'objet recherché.`,
+  diagrams:[{key:'cvIcon', caption:"Détection d'objet par vision par ordinateur"}],
+  example:`<b>Exemple</b> — Un robot trieur équipé d'une caméra peut distinguer des objets rouges des objets verts, et orienter un bras robotique différemment selon la couleur détectée.`,
+  exercise:{question:"Qu'est-ce que la vision par ordinateur permet à un robot de faire ?", options:["Mesurer uniquement la température", "Interpréter des images pour détecter ou reconnaître des objets", "Communiquer par Bluetooth", "Charger sa batterie plus vite"], correct:1, explanation:"La vision par ordinateur permet à un système d'analyser des images pour en extraire des informations utiles, comme la présence ou le type d'un objet."},
+  practice:`Un projet de tri automatique par couleur ou par forme sera l'occasion idéale de mettre en pratique une première application simple de vision par ordinateur.`
+},
+{
+  id:'m13', session:4, sessionLabel:'Session 4 · IA embarquée & projet', num:13,
+  title:"Traitement du langage et assistants intelligents", navTitle:"Traitement du langage",
+  quoi:`Le <b>traitement automatique du langage</b> (NLP, Natural Language Processing) est la branche de l'IA qui permet à une machine de comprendre et de produire du langage humain, écrit ou parlé — c'est ce qui rend possible les assistants vocaux et les chatbots.`,
+  aquoi:`Combiné à la robotique, le NLP permet de commander un robot directement par la voix ou le texte, plutôt que par un bouton ou un code.`,
+  comment:`Une commande vocale ou textuelle est d'abord transformée en texte (si c'est de la voix), puis analysée pour en extraire l'intention (par exemple "allumer" ou "avancer") et les paramètres associés (quelle LED, quelle distance), avant d'être traduite en une commande exécutable par le robot.`,
+  diagrams:[{key:'nlpIcon', caption:"D'une phrase en langage naturel à une commande exécutable"}],
+  example:`<b>Exemple</b> — Dire "avance de deux mètres" à un robot nécessite d'abord de reconnaître l'intention (se déplacer), puis le paramètre (2 mètres), avant de calculer combien de tours de roue cela représente.`,
+  exercise:{question:"Que permet le traitement du langage (NLP) dans un projet robotique ?", options:["De mesurer la distance avec précision", "De commander un robot par la voix ou le texte", "De recharger la batterie automatiquement", "De peindre le robot"], correct:1, explanation:"Le NLP permet à un robot de comprendre des instructions données en langage naturel (voix ou texte) plutôt que par un code ou un bouton."},
+  practice:`Un futur projet pourra intégrer une commande vocale simple (par exemple, un mot déclencheur) pour démarrer ou arrêter un robot.`
+},
+{
+  id:'m14', session:4, sessionLabel:'Session 4 · IA embarquée & projet', num:14,
+  title:"L'IA embarquée sur Raspberry Pi et microcontrôleurs", navTitle:"IA embarquée",
+  quoi:`L'<b>IA embarquée</b> (ou Edge AI) consiste à exécuter un modèle d'intelligence artificielle directement sur un petit appareil (comme un Raspberry Pi), sans dépendre d'une connexion internet ou d'un serveur distant.`,
+  aquoi:`Pour un robot autonome, c'est essentiel : il doit souvent prendre des décisions en temps réel, dans des endroits sans connexion internet fiable — exactement le contexte de nombreux projets robotiques en Haïti.`,
+  comment:`Pour fonctionner sur un petit appareil aux ressources limitées, les modèles d'IA embarquée sont généralement allégés (compressés, simplifiés) afin de tourner rapidement avec peu de mémoire et peu de puissance de calcul, tout en gardant une précision suffisante pour la tâche visée.`,
+  diagrams:[{key:'edgeAi', caption:"Un modèle d'IA exécuté directement sur l'appareil"}],
+  example:`<b>Exemple</b> — Un Raspberry Pi équipé d'une caméra peut faire tourner un modèle léger de reconnaissance d'objets directement embarqué, sans jamais envoyer d'image à un serveur distant — utile si la connexion internet est absente ou peu fiable.`,
+  exercise:{question:"Quel est l'avantage principal de l'IA embarquée (Edge AI) pour un robot autonome ?", options:["Elle nécessite toujours une connexion internet très rapide", "Elle permet de prendre des décisions en temps réel sans dépendre d'une connexion internet", "Elle rend le robot plus lourd", "Elle remplace complètement les capteurs"], correct:1, explanation:"L'IA embarquée fonctionne directement sur l'appareil, ce qui permet des décisions rapides et fiables même sans connexion internet."},
+  practice:`Pour un projet de robot autonome destiné à fonctionner sur le terrain, vous privilégierez systématiquement un modèle d'IA embarquée plutôt qu'une solution dépendante du cloud.`
+},
+{
+  id:'m15', session:4, sessionLabel:'Session 4 · IA embarquée & projet', num:15,
+  title:"Éthique et limites de l'intelligence artificielle", navTitle:"Éthique & limites de l'IA",
+  quoi:`L'IA n'est pas infaillible : un modèle peut se tromper, reproduire des biais présents dans ses données d'entraînement, ou être utilisé dans un cadre qui pose des questions éthiques (surveillance, remplacement d'emplois, prise de décision automatisée sans supervision humaine).`,
+  aquoi:`Un bon ingénieur en robotique et IA doit savoir reconnaître ces limites pour concevoir des systèmes responsables, fiables, et dignes de confiance.`,
+  comment:`Un modèle entraîné sur des données non représentatives reproduira les déséquilibres de ces données dans ses prédictions. C'est pourquoi la qualité, la diversité et la transparence des données utilisées sont aussi importantes que la performance technique du modèle.`,
+  diagrams:[{key:'ethicsIcon', caption:"Toujours questionner les décisions d'un système d'IA"}],
+  example:`<b>Exemple</b> — Un système de reconnaissance faciale entraîné principalement sur un seul type de visages sera souvent moins précis sur les visages sous-représentés dans ses données d'entraînement — un biais concret aux conséquences réelles.`,
+  exercise:{question:"Pourquoi la diversité des données d'entraînement est-elle importante en IA ?", options:["Elle n'a aucune importance", "Un modèle entraîné sur des données non représentatives reproduira des biais dans ses prédictions", "Elle ralentit uniquement l'entraînement", "Elle sert seulement à remplir de l'espace disque"], correct:1, explanation:"Un modèle apprend uniquement ce que ses données lui montrent ; des données non représentatives produisent des résultats biaisés ou peu fiables pour les cas sous-représentés."},
+  practice:`Avant de déployer un projet intégrant de l'IA, vous prendrez toujours un moment pour questionner : sur quelles données ce système a-t-il été entraîné, et quelles décisions prend-il sans supervision humaine ?`
+},
+{
+  id:'m16', session:4, sessionLabel:'Session 4 · IA embarquée & projet', num:16,
+  title:"Méthodologie de projet robotique et IA", navTitle:"Méthodologie de projet",
+  quoi:`Un projet de robotique et d'IA suit une démarche structurée : définir le problème, concevoir une solution, choisir les composants (capteurs, actionneurs, éventuellement un modèle d'IA), construire, programmer, tester, puis présenter.`,
+  aquoi:`Cette méthode s'applique aussi bien à un petit projet éducatif qu'à un système professionnel complexe — elle évite de se disperser et permet d'avancer efficacement, même face à un projet ambitieux.`,
+  comment:`Chaque étape nourrit la suivante : un problème mal défini mène à une solution mal ciblée. Il est toujours préférable de tester chaque composant séparément (un capteur, un actionneur, un modèle d'IA) avant d'assembler le système complet.`,
+  diagrams:[{key:'projectFlow', caption:"Les étapes d'un projet robotique + IA"}],
+  example:`<b>Exemple</b> — Pour un robot trieur de déchets : définir le problème (trier plastique/verre), concevoir (caméra + bras + IA de classification), choisir les composants, construire et tester chaque bloc séparément, puis assembler et présenter le prototype final.`,
+  exercise:{question:"Pourquoi est-il recommandé de tester chaque composant séparément avant d'assembler le système complet ?", options:["Pour perdre du temps volontairement", "Pour isoler plus facilement l'origine d'un problème s'il y en a un", "Ce n'est jamais recommandé", "Parce que les composants s'usent si on les teste séparément"], correct:1, explanation:"Tester chaque bloc séparément permet d'identifier rapidement la source d'un problème, plutôt que de chercher une panne dans un système complet et complexe."},
+  practice:`Cette méthodologie sera votre feuille de route pour votre projet final de robotique et IA, de la définition du problème jusqu'à la présentation du prototype.`
+}
+];
+
+window.QUESTIONS = [
+{topic:'Définition', question:"Qu'est-ce qui définit fondamentalement un robot ?", options:["Il doit ressembler à un humain", "Il perçoit, décide et agit", "Il doit être connecté à internet", "Il doit être mobile"], correct:1, explanation:"La boucle percevoir-décider-agir définit un robot, quelle que soit sa forme."},
+{topic:'Histoire', question:"Dans quel secteur la robotique s'est-elle développée en premier, dans les années 1960 ?", options:["Le secteur médical", "Le secteur industriel", "Le secteur domestique", "Le secteur spatial uniquement"], correct:1, explanation:"La robotique industrielle (soudure, peinture, manutention) a été le premier grand domaine d'application de la robotique."},
+{topic:'Classification', question:"Qu'est-ce qui distingue un robot mobile d'un robot fixe ?", options:["Le robot mobile peut se déplacer, le robot fixe reste à un poste", "Le robot fixe n'a pas de capteurs", "Il n'y a aucune différence réelle", "Le robot mobile est toujours plus lent"], correct:0, explanation:"Un robot mobile se déplace dans son environnement, contrairement à un robot fixe ancré à un poste de travail."},
+{topic:'Anatomie', question:"Quel élément d'un robot joue le rôle du cerveau ?", options:["L'effecteur", "Le contrôleur", "Le capteur", "L'actionneur"], correct:1, explanation:"Le contrôleur traite l'information et décide des commandes à envoyer."},
+{topic:'Anatomie', question:"Quel élément d'un robot perçoit son environnement ?", options:["Le capteur", "L'actionneur", "L'effecteur", "Le contrôleur"], correct:0, explanation:"Le capteur transforme une grandeur physique de l'environnement en signal exploitable."},
+{topic:'Anatomie', question:"Quel élément produit le mouvement d'un robot ?", options:["Le capteur", "L'actionneur", "Le contrôleur seul", "Aucun des trois"], correct:1, explanation:"L'actionneur transforme un signal électrique en mouvement physique."},
+{topic:'DDL', question:"Qu'est-ce qu'un degré de liberté (DDL) ?", options:["La vitesse maximale d'un robot", "Une direction indépendante de mouvement possible", "Le poids d'un robot", "Le nombre de capteurs"], correct:1, explanation:"Un DDL est une direction indépendante (rotation ou translation) dans laquelle le robot peut se déplacer."},
+{topic:'DDL', question:"Une articulation qui tourne, comme un coude, est dite :", options:["Prismatique", "Rotoïde", "Sphérique", "Linéaire"], correct:1, explanation:"Une articulation rotoïde tourne autour d'un axe, contrairement à une articulation prismatique qui coulisse en ligne droite."},
+{topic:'Manipulateurs', question:"Quel type de manipulateur est particulièrement adapté à l'assemblage rapide sur un plan horizontal ?", options:["Sphérique", "SCARA", "Cylindrique", "Anthropomorphe"], correct:1, explanation:"Le SCARA est conçu pour des mouvements rapides et précis sur un plan horizontal."},
+{topic:'Manipulateurs', question:"Quel type de manipulateur imite l'articulation du bras humain ?", options:["Cartésien", "Cylindrique", "Anthropomorphe", "SCARA"], correct:2, explanation:"Le manipulateur anthropomorphe reproduit la structure articulée du bras humain, le rendant très polyvalent."},
+{topic:'Capteurs', question:"À quoi sert un encodeur sur un moteur ?", options:["À mesurer la rotation précise du moteur", "À alimenter le moteur", "À détecter la lumière", "À produire du son"], correct:0, explanation:"Un encodeur mesure précisément l'angle ou la vitesse de rotation d'un axe moteur."},
+{topic:'Capteurs', question:"Quel capteur mesure l'orientation et l'accélération d'un robot ?", options:["Un encodeur", "Une IMU (centrale inertielle)", "Un capteur de gaz", "Un microphone"], correct:1, explanation:"L'IMU (Inertial Measurement Unit) mesure orientation, accélération et parfois rotation angulaire."},
+{topic:'Actionneurs', question:"Quel actionneur est le mieux adapté pour atteindre un angle précis et le maintenir ?", options:["Le moteur DC", "Le servomoteur", "Le buzzer", "La LED"], correct:1, explanation:"Le servomoteur reçoit une commande d'angle précis et le maintient activement."},
+{topic:'Actionneurs', question:"Quel actionneur avance par petits incréments précis et comptables ?", options:["Le moteur DC", "Le servomoteur", "Le moteur pas-à-pas", "Le relais"], correct:2, explanation:"Le moteur pas-à-pas avance d'un angle fixe à chaque impulsion électrique, permettant un positionnement très précis."},
+{topic:'Navigation', question:"Comment un robot suiveur de ligne détecte-t-il généralement la ligne ?", options:["Avec un microphone", "Avec des capteurs optiques sous le châssis", "Avec un GPS", "Il ne peut pas la détecter"], correct:1, explanation:"Des capteurs optiques sous le robot détectent le contraste entre la ligne et le sol."},
+{topic:'Navigation', question:"Comment un robot déclenche-t-il généralement une manœuvre d'évitement d'obstacle ?", options:["Quand la distance mesurée devient trop faible", "Quand la batterie est pleine", "Au hasard", "Jamais, ce n'est pas possible"], correct:0, explanation:"Un capteur de distance mesure l'espace devant le robot ; en dessous d'un seuil, il déclenche l'évitement."},
+{topic:'Programmation', question:"Quel outil de programmation par blocs est souvent utilisé pour débuter avec un robot ?", options:["MakeCode", "SQL", "HTML", "Photoshop"], correct:0, explanation:"MakeCode (comme Scratch) permet de programmer par blocs visuels, idéal pour débuter."},
+{topic:'Programmation', question:"Qu'est-ce qui reste identique entre une programmation par blocs et une programmation en code textuel ?", options:["Rien du tout", "La logique de base : lire, décider, agir", "La couleur de l'écran", "Le prix du matériel"], correct:1, explanation:"Seule la façon d'écrire la logique change ; la logique de fond reste la même."},
+{topic:'IA', question:"Quelle est la relation correcte entre IA, Machine Learning et Deep Learning ?", options:["Ce sont des synonymes", "Le Deep Learning est une sous-catégorie du Machine Learning, lui-même une sous-catégorie de l'IA", "L'IA est une sous-catégorie du Machine Learning", "Aucun lien entre ces termes"], correct:1, explanation:"L'IA est le domaine le plus large, le Machine Learning une approche, le Deep Learning une technique de Machine Learning."},
+{topic:'IA', question:"Qu'est-ce qui différencie un programme classique d'un système de Machine Learning ?", options:["Le Machine Learning apprend à partir de données plutôt que de suivre des règles écrites explicitement", "Il n'y a aucune différence", "Le Machine Learning ne fonctionne jamais sur ordinateur", "Un programme classique est toujours plus rapide"], correct:0, explanation:"Le Machine Learning découvre lui-même des règles ou motifs à partir de données, contrairement à la programmation classique basée sur des règles explicites."},
+{topic:'Apprentissage', question:"Que se passe-t-il pendant la phase d'entraînement d'un modèle de Machine Learning ?", options:["Le modèle est simplement copié", "Le modèle ajuste ses paramètres internes pour réduire ses erreurs", "Rien de particulier", "Les données sont supprimées"], correct:1, explanation:"L'entraînement ajuste itérativement les paramètres du modèle pour minimiser l'écart entre ses prédictions et les réponses attendues."},
+{topic:'Apprentissage', question:"Dans le cycle du Machine Learning, qu'est-ce qui vient juste après les données et l'entraînement ?", options:["La suppression du modèle", "L'obtention d'un modèle entraîné, utilisable pour des prédictions", "Le retour aux données brutes uniquement", "La fin du processus sans résultat"], correct:1, explanation:"Après l'entraînement, on obtient un modèle capable de faire des prédictions sur de nouvelles données."},
+{topic:'Vision', question:"Que permet la vision par ordinateur à un robot ?", options:["De mesurer uniquement la température", "D'interpréter des images pour détecter ou reconnaître des objets", "De charger sa batterie plus vite", "De communiquer par Bluetooth"], correct:1, explanation:"La vision par ordinateur analyse des images pour en extraire des informations utiles comme la présence ou le type d'un objet."},
+{topic:'Vision', question:"Une image traitée par un ordinateur est fondamentalement composée de :", options:["Mots", "Pixels (valeurs numériques de couleur)", "Sons", "Odeurs"], correct:1, explanation:"Une image numérique est une grille de pixels, chacun représenté par des valeurs numériques de couleur."},
+{topic:'NLP', question:"Que permet le traitement du langage (NLP) dans un projet robotique ?", options:["De mesurer une distance", "De commander un robot par la voix ou le texte", "De peindre le robot", "De recharger la batterie"], correct:1, explanation:"Le NLP permet à un robot de comprendre des instructions en langage naturel, écrit ou parlé."},
+{topic:'IA embarquée', question:"Qu'est-ce que l'IA embarquée (Edge AI) ?", options:["Un modèle d'IA qui tourne uniquement sur un serveur distant", "Un modèle d'IA exécuté directement sur l'appareil, sans dépendre d'internet", "Une IA qui ne fonctionne jamais", "Un type de capteur"], correct:1, explanation:"L'IA embarquée s'exécute directement sur l'appareil (comme un Raspberry Pi), sans dépendre d'une connexion internet."},
+{topic:'IA embarquée', question:"Pourquoi les modèles d'IA embarquée sont-ils souvent allégés ou compressés ?", options:["Pour les rendre plus jolis", "Pour qu'ils puissent fonctionner avec les ressources limitées d'un petit appareil", "Parce que c'est obligatoire par la loi", "Pour les rendre payants"], correct:1, explanation:"Un petit appareil a une mémoire et une puissance de calcul limitées ; les modèles doivent donc être allégés pour y fonctionner efficacement."},
+{topic:'Éthique', question:"Que peut-il se passer si un modèle d'IA est entraîné sur des données non représentatives ?", options:["Rien, cela n'a aucun effet", "Le modèle peut reproduire des biais et être moins fiable pour les cas sous-représentés", "Le modèle devient automatiquement parfait", "Le modèle s'auto-corrige toujours"], correct:1, explanation:"Un modèle apprend uniquement ce que ses données lui montrent ; des données non représentatives produisent des biais dans les prédictions."},
+{topic:'Éthique', question:"Pourquoi est-il important de questionner les décisions automatisées d'un système d'IA ?", options:["Ce n'est jamais nécessaire", "Parce qu'un système d'IA peut se tromper ou reproduire des biais sans supervision humaine", "Parce que l'IA est toujours parfaite", "Parce que la loi l'interdit"], correct:1, explanation:"Un système d'IA n'est pas infaillible ; une supervision humaine reste nécessaire pour éviter des décisions biaisées ou erronées."},
+{topic:'Méthodologie', question:"Quelle est la première étape d'une méthodologie de projet robotique et IA ?", options:["Acheter tous les composants au hasard", "Définir clairement le problème à résoudre", "Présenter directement le projet", "Écrire le code sans réfléchir"], correct:1, explanation:"Définir clairement le problème oriente toutes les étapes suivantes de la conception."},
+{topic:'Méthodologie', question:"Pourquoi teste-t-on chaque composant séparément avant d'assembler un système complet ?", options:["Pour perdre du temps", "Pour isoler plus facilement l'origine d'un problème", "Ce n'est jamais recommandé", "Parce que les composants s'usent en étant testés seuls"], correct:1, explanation:"Tester bloc par bloc permet d'identifier rapidement la source d'un problème avant l'assemblage final."},
+{topic:'Anatomie', question:"Dans un robot suiveur de ligne, quel est le rôle de l'effecteur ou de l'actionneur final ?", options:["Mesurer la ligne", "Produire le mouvement des roues en réponse à la décision prise", "Afficher une couleur", "Charger la batterie"], correct:1, explanation:"Une fois la décision prise par le contrôleur, l'actionneur (ici les moteurs des roues) exécute le mouvement correspondant."},
+{topic:'Manipulateurs', question:"Qu'est-ce qui différencie principalement les types de manipulateurs industriels entre eux ?", options:["Leur couleur", "La forme de leur espace de travail et leurs articulations", "Leur prix uniquement", "Leur marque"], correct:1, explanation:"Chaque type de manipulateur (cartésien, cylindrique, sphérique, SCARA, anthropomorphe) se définit par la forme de son espace de travail."},
+{topic:'Capteurs', question:"Pourquoi le choix du capteur dépend-il de la tâche du robot ?", options:["Il n'y a aucun lien entre les deux", "Chaque capteur transforme une grandeur physique différente en signal exploitable, adaptée à un besoin précis", "Tous les capteurs sont interchangeables", "Le capteur ne sert à rien"], correct:1, explanation:"Le bon capteur dépend de l'information dont le robot a besoin : distance, lumière, orientation, rotation, etc."},
+{topic:'Programmation', question:"Pourquoi commencer l'apprentissage de la programmation robotique par des blocs visuels ?", options:["Parce que c'est la seule méthode qui existe", "Pour comprendre la logique (conditions, boucles) sans se soucier de la syntaxe", "Parce que le code textuel est interdit aux débutants", "Parce que les blocs sont plus rapides à exécuter"], correct:1, explanation:"Les blocs visuels permettent de se concentrer sur la logique de programmation avant d'aborder la syntaxe d'un langage textuel."},
+{topic:'IA', question:"Un modèle de Machine Learning peut-il faire des prédictions sur des données qu'il n'a jamais vues ?", options:["Non, jamais", "Oui, c'est justement l'objectif après l'entraînement", "Seulement si on le lui interdit", "Seulement le week-end"], correct:1, explanation:"Après l'entraînement, le modèle généralise ce qu'il a appris pour faire des prédictions sur de nouvelles données."},
+{topic:'Définition', question:"Un ventilateur simple qui tourne en continu est-il un robot selon la définition vue en cours ?", options:["Oui, tout objet électronique est un robot", "Non, car il ne perçoit pas son environnement ni ne prend de décision", "Oui, car il bouge", "Cela dépend de sa couleur"], correct:1, explanation:"Sans perception ni décision, un objet qui exécute une action fixe n'est pas un robot au sens plein du terme."},
+{topic:'Histoire', question:"Quelle tendance récente caractérise l'évolution de la robotique depuis les années 2010-2020 ?", options:["La disparition totale des robots industriels", "L'essor des robots collaboratifs et de l'IA embarquée", "Le retour aux machines purement mécaniques", "L'interdiction des robots mobiles"], correct:1, explanation:"Les robots collaboratifs et l'intégration croissante de l'IA embarquée caractérisent les tendances récentes du secteur."},
+{topic:'DDL', question:"Combien de degrés de liberté possède approximativement un bras robotique industriel standard ?", options:["1", "6", "50", "200"], correct:1, explanation:"6 degrés de liberté est une configuration standard largement utilisée dans l'industrie, permettant d'atteindre une position et une orientation quelconques."},
+{topic:'Actionneurs', question:"Pour la propulsion continue des roues d'un robot mobile, quel actionneur est le plus couramment utilisé ?", options:["Le moteur DC", "Le servomoteur uniquement", "Le buzzer", "La LED"], correct:0, explanation:"Le moteur DC, avec sa rotation continue, est l'actionneur le plus adapté à la propulsion des roues."},
+{topic:'Vision', question:"Un modèle de vision par ordinateur repère des objets en analysant principalement :", options:["Des odeurs", "Des motifs comme les contours, formes et textures dans les pixels de l'image", "Des ondes radio", "Des sons"], correct:1, explanation:"La vision par ordinateur analyse les valeurs de pixels pour repérer des motifs caractéristiques des objets recherchés."},
+{topic:'Méthodologie', question:"Dans un projet robotique+IA, à quel moment doit-on idéalement choisir les composants (capteurs, actionneurs, modèle d'IA) ?", options:["Avant même de définir le problème", "Après avoir défini le problème et conçu une solution générale", "Jamais, cela n'a pas d'importance", "Uniquement après la présentation finale"], correct:1, explanation:"Le choix des composants doit découler de la solution conçue pour répondre au problème défini, pas l'inverse."}
+];
+</script>
+<script>
+/* ================= SVG DIAGRAM HELPERS ================= */
+const SVG = {
+  wrap(inner, vb="0 0 300 160"){ return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" fill="none">${inner}</svg>`; },
+  robotAnatomy(){ return this.wrap(`
+    <circle cx="150" cy="40" r="22" stroke="#4f8cff" stroke-width="2.5"/>
+    <text x="150" y="45" fill="#4f8cff" font-size="10" text-anchor="middle" font-family="IBM Plex Mono">Contrôleur</text>
+    <line x1="150" y1="62" x2="150" y2="90" stroke="#a56eff" stroke-width="3"/>
+    <rect x="110" y="90" width="80" height="40" rx="6" stroke="#a56eff" stroke-width="2.5"/>
+    <text x="150" y="114" fill="#a56eff" font-size="10" text-anchor="middle" font-family="IBM Plex Mono">Corps</text>
+    <line x1="110" y1="110" x2="60" y2="130" stroke="#e0b34a" stroke-width="3"/>
+    <circle cx="55" cy="135" r="8" stroke="#e0b34a" stroke-width="2"/>
+    <text x="40" y="150" fill="#9aa0c3" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">Capteur</text>
+    <line x1="190" y1="110" x2="240" y2="130" stroke="#52b788" stroke-width="3"/>
+    <rect x="235" y="128" width="20" height="10" stroke="#52b788" stroke-width="2"/>
+    <text x="255" y="150" fill="#9aa0c3" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">Actionneur</text>`,"0 0 300 160"); },
+  dofArm(){ return this.wrap(`
+    <circle cx="60" cy="130" r="6" fill="#4f8cff"/>
+    <line x1="60" y1="130" x2="120" y2="80" stroke="#4f8cff" stroke-width="4"/>
+    <circle cx="120" cy="80" r="6" fill="#a56eff"/>
+    <line x1="120" y1="80" x2="190" y2="100" stroke="#a56eff" stroke-width="4"/>
+    <circle cx="190" cy="100" r="6" fill="#e0b34a"/>
+    <line x1="190" y1="100" x2="240" y2="60" stroke="#e0b34a" stroke-width="4"/>
+    <circle cx="240" cy="60" r="5" fill="#52b788"/>
+    <text x="150" y="148" fill="#9aa0c3" font-size="11" text-anchor="middle" font-family="IBM Plex Mono">Chaque articulation = 1 degré de liberté (DDL)</text>`,"0 0 300 160"); },
+  manipTypes(){ return this.wrap(`
+    <line x1="30" y1="40" x2="30" y2="100" stroke="#4f8cff" stroke-width="3"/>
+    <line x1="30" y1="100" x2="80" y2="100" stroke="#4f8cff" stroke-width="3"/>
+    <text x="55" y="120" fill="#9aa0c3" font-size="8" text-anchor="middle" font-family="IBM Plex Mono">Cartésien</text>
+    <circle cx="150" cy="70" r="25" stroke="#a56eff" stroke-width="2"/>
+    <line x1="150" y1="70" x2="150" y2="100" stroke="#a56eff" stroke-width="3"/>
+    <text x="150" y="120" fill="#9aa0c3" font-size="8" text-anchor="middle" font-family="IBM Plex Mono">Cylindrique</text>
+    <path d="M230 50 A30 30 0 0 1 270 90" stroke="#e0b34a" stroke-width="3" fill="none"/>
+    <text x="250" y="120" fill="#9aa0c3" font-size="8" text-anchor="middle" font-family="IBM Plex Mono">Sphérique</text>`,"0 0 300 140"); },
+  scara(){ return this.wrap(`
+    <line x1="60" y1="130" x2="60" y2="40" stroke="#4f8cff" stroke-width="4"/>
+    <line x1="60" y1="50" x2="140" y2="50" stroke="#a56eff" stroke-width="4"/>
+    <line x1="140" y1="50" x2="190" y2="90" stroke="#e0b34a" stroke-width="4"/>
+    <line x1="190" y1="90" x2="190" y2="130" stroke="#52b788" stroke-width="3" stroke-dasharray="4,3"/>
+    <text x="130" y="148" fill="#9aa0c3" font-size="11" text-anchor="middle" font-family="IBM Plex Mono">SCARA — bras articulé horizontal</text>`,"0 0 260 155"); },
+  anthropo(){ return this.wrap(`
+    <circle cx="150" cy="30" r="12" stroke="#4f8cff" stroke-width="2.5"/>
+    <line x1="150" y1="42" x2="150" y2="80" stroke="#4f8cff" stroke-width="3"/>
+    <line x1="150" y1="50" x2="100" y2="90" stroke="#a56eff" stroke-width="3"/>
+    <line x1="100" y1="90" x2="80" y2="130" stroke="#a56eff" stroke-width="3"/>
+    <line x1="150" y1="50" x2="200" y2="90" stroke="#e0b34a" stroke-width="3"/>
+    <line x1="200" y1="90" x2="220" y2="130" stroke="#e0b34a" stroke-width="3"/>
+    <text x="150" y="150" fill="#9aa0c3" font-size="11" text-anchor="middle" font-family="IBM Plex Mono">Anthropomorphe — imite le bras humain</text>`,"0 0 300 160"); },
+  sensorArray(){ return this.wrap(`
+    <rect x="30" y="50" width="50" height="35" rx="4" stroke="#4f8cff" stroke-width="2"/>
+    <text x="55" y="72" fill="#4f8cff" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">Ultrason</text>
+    <circle cx="140" cy="67" r="20" stroke="#a56eff" stroke-width="2"/>
+    <text x="140" y="71" fill="#a56eff" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">Caméra</text>
+    <rect x="195" y="50" width="40" height="35" rx="4" stroke="#e0b34a" stroke-width="2"/>
+    <text x="215" y="72" fill="#e0b34a" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">IMU</text>
+    <circle cx="270" cy="67" r="18" stroke="#52b788" stroke-width="2"/>
+    <text x="270" y="71" fill="#52b788" font-size="8" text-anchor="middle" font-family="IBM Plex Mono">Encodeur</text>
+    <text x="150" y="120" fill="#9aa0c3" font-size="11" text-anchor="middle" font-family="IBM Plex Mono">Les "sens" d'un robot</text>`,"0 0 300 140"); },
+  dcMotorIcon(){ return this.wrap(`
+    <circle cx="130" cy="80" r="40" stroke="#4f8cff" stroke-width="2.5"/>
+    <circle cx="130" cy="80" r="8" fill="#e0b34a"/>
+    <line x1="120" y1="40" x2="120" y2="20" stroke="#a56eff" stroke-width="3"/>
+    <line x1="140" y1="40" x2="140" y2="20" stroke="#a56eff" stroke-width="3"/>
+    <text x="130" y="145" fill="#9aa0c3" font-size="12" text-anchor="middle" font-family="IBM Plex Mono">Moteur DC — rotation continue</text>`); },
+  servoIcon(){ return this.wrap(`
+    <rect x="70" y="55" width="90" height="60" rx="4" stroke="#a56eff" stroke-width="2.5"/>
+    <circle cx="115" cy="55" r="12" stroke="#e0b34a" stroke-width="2.5"/>
+    <line x1="115" y1="43" x2="140" y2="20" stroke="#e0b34a" stroke-width="3"/>
+    <text x="115" y="145" fill="#9aa0c3" font-size="12" text-anchor="middle" font-family="IBM Plex Mono">Servomoteur — angle précis</text>`); },
+  stepperIcon(){ return this.wrap(`
+    <circle cx="130" cy="80" r="40" stroke="#52b788" stroke-width="2.5"/>
+    ${Array.from({length:8}).map((_,i)=>{const a=i*Math.PI/4; const x=130+32*Math.cos(a); const y=80+32*Math.sin(a); return `<circle cx="${x}" cy="${y}" r="3" fill="#e0b34a"/>`;}).join('')}
+    <text x="130" y="145" fill="#9aa0c3" font-size="12" text-anchor="middle" font-family="IBM Plex Mono">Moteur pas-à-pas — mouvement précis par pas</text>`); },
+  lineFollow(){ return this.wrap(`
+    <path d="M20 130 Q100 20 280 130" stroke="#2a2f52" stroke-width="18" fill="none"/>
+    <path d="M20 130 Q100 20 280 130" stroke="#e0b34a" stroke-width="4" fill="none" stroke-dasharray="2,8"/>
+    <circle cx="150" cy="73" r="14" fill="#4f8cff"/>
+    <text x="150" y="150" fill="#9aa0c3" font-size="11" text-anchor="middle" font-family="IBM Plex Mono">Robot suiveur de ligne</text>`,"0 0 300 160"); },
+  obstacleAvoid(){ return this.wrap(`
+    <circle cx="70" cy="90" r="18" fill="#4f8cff"/>
+    <path d="M88 90 Q120 60 150 90" stroke="#9aa0c3" stroke-width="2" stroke-dasharray="3,4" fill="none"/>
+    <rect x="150" y="60" width="30" height="60" fill="#e0645a" opacity="0.6"/>
+    <path d="M70 90 Q110 140 200 140 Q240 140 240 90" stroke="#52b788" stroke-width="3" fill="none" stroke-dasharray="5,4"/>
+    <text x="150" y="155" fill="#9aa0c3" font-size="11" text-anchor="middle" font-family="IBM Plex Mono">Évitement d'obstacle</text>`,"0 0 300 165"); },
+  progBlocks(){ return this.wrap(`
+    ${['MakeCode','Arduino (C++)','Python'].map((t,i)=>`
+      <rect x="${20+i*95}" y="50" width="80" height="50" rx="6" fill="#1d2340" stroke="#4f8cff" stroke-width="1.5"/>
+      <text x="${60+i*95}" y="79" fill="#eef0fb" font-size="11" text-anchor="middle" font-family="IBM Plex Mono">${t}</text>
+      ${i<2?`<path d="M${100+i*95} 75 L${115+i*95} 75" stroke="#a56eff" stroke-width="2" marker-end="url(#arrow)"/>`:''}
+    `).join('')}
+    <text x="150" y="130" fill="#9aa0c3" font-size="11" text-anchor="middle" font-family="IBM Plex Mono">Progression naturelle d'apprentissage</text>`,"0 0 300 140"); },
+  aiMlDl(){ return this.wrap(`
+    <circle cx="150" cy="80" r="70" stroke="#4f8cff" stroke-width="2"/>
+    <text x="150" y="25" fill="#4f8cff" font-size="11" text-anchor="middle" font-family="IBM Plex Mono">Intelligence Artificielle</text>
+    <circle cx="150" cy="90" r="48" stroke="#a56eff" stroke-width="2"/>
+    <text x="150" y="55" fill="#a56eff" font-size="10" text-anchor="middle" font-family="IBM Plex Mono">Machine Learning</text>
+    <circle cx="150" cy="100" r="26" stroke="#e0b34a" stroke-width="2"/>
+    <text x="150" y="103" fill="#e0b34a" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">Deep Learning</text>`,"0 0 300 165"); },
+  mlPipeline(){ return this.wrap(`
+    ${['Données','Entraînement','Modèle','Prédiction'].map((t,i)=>`
+      <rect x="${10+i*72}" y="55" width="60" height="40" rx="5" fill="#1d2340" stroke="#4f8cff" stroke-width="1.5"/>
+      <text x="${40+i*72}" y="78" fill="#eef0fb" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">${t}</text>
+      ${i<3?`<line x1="${70+i*72}" y1="75" x2="${82+i*72}" y2="75" stroke="#a56eff" stroke-width="2"/>`:''}
+    `).join('')}`,"0 0 300 130"); },
+  cvIcon(){ return this.wrap(`
+    <rect x="60" y="40" width="180" height="100" rx="8" stroke="#4f8cff" stroke-width="2"/>
+    <rect x="90" y="65" width="50" height="50" stroke="#e0b34a" stroke-width="2"/>
+    <text x="115" y="130" fill="#e0b34a" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">Objet détecté</text>
+    <circle cx="190" cy="90" r="22" stroke="#52b788" stroke-width="2"/>
+    <text x="150" y="25" fill="#9aa0c3" font-size="11" text-anchor="middle" font-family="IBM Plex Mono">Vision par ordinateur</text>`,"0 0 300 150"); },
+  nlpIcon(){ return this.wrap(`
+    <rect x="30" y="50" width="100" height="50" rx="10" fill="#1d2340" stroke="#4f8cff" stroke-width="1.5"/>
+    <text x="80" y="80" fill="#eef0fb" font-size="10" text-anchor="middle" font-family="IBM Plex Mono">"Allume la LED"</text>
+    <path d="M135 75 L155 75" stroke="#a56eff" stroke-width="2"/>
+    <rect x="160" y="50" width="110" height="50" rx="10" fill="#1d2340" stroke="#52b788" stroke-width="1.5"/>
+    <text x="215" y="80" fill="#eef0fb" font-size="10" text-anchor="middle" font-family="IBM Plex Mono">digitalWrite(HIGH)</text>`,"0 0 300 130"); },
+  edgeAi(){ return this.wrap(`
+    <rect x="90" y="30" width="120" height="90" rx="8" stroke="#4f8cff" stroke-width="2"/>
+    <text x="150" y="25" fill="#9aa0c3" font-size="10" text-anchor="middle" font-family="IBM Plex Mono">Raspberry Pi</text>
+    <rect x="110" y="50" width="80" height="50" rx="4" stroke="#a56eff" stroke-width="1.5"/>
+    <text x="150" y="78" fill="#a56eff" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">Modèle IA léger</text>
+    <text x="150" y="140" fill="#9aa0c3" font-size="11" text-anchor="middle" font-family="IBM Plex Mono">L'IA tourne directement sur l'appareil</text>`,"0 0 300 155"); },
+  ethicsIcon(){ return this.wrap(`
+    <path d="M130 20 L230 55 L230 100 Q230 140 130 150 Q30 140 30 100 L30 55 Z" stroke="#e0b34a" stroke-width="2.5"/>
+    <text x="130" y="95" fill="#e0b34a" font-size="30" text-anchor="middle" font-weight="bold">?</text>`,"0 0 260 160"); },
+  projectFlow(){ return this.wrap(`
+    ${['Définir','Concevoir','Construire','Programmer','Tester','Présenter'].map((t,i)=>`
+      <rect x="${10+i*47}" y="55" width="40" height="30" rx="5" fill="#1d2340" stroke="#4f8cff" stroke-width="1.5"/>
+      <text x="${30+i*47}" y="74" fill="#eef0fb" font-size="8.5" text-anchor="middle" font-family="IBM Plex Mono">${t}</text>
+      ${i<5?`<line x1="${50+i*47}" y1="70" x2="${57+i*47}" y2="70" stroke="#a56eff" stroke-width="2"/>`:''}
+    `).join('')}`,"0 0 300 100"); },
+  roboTimeline(){ return this.wrap(`
+    <line x1="20" y1="80" x2="280" y2="80" stroke="#2a2f52" stroke-width="3"/>
+    ${[["1960s","Industrie"],["1990s","Mobile"],["2010s","Collaboratif"],["2020s","IA embarquée"]].map((d,i)=>`
+      <circle cx="${50+i*75}" cy="80" r="6" fill="#4f8cff"/>
+      <text x="${50+i*75}" y="65" fill="#9aa0c3" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">${d[0]}</text>
+      <text x="${50+i*75}" y="100" fill="#eef0fb" font-size="9" text-anchor="middle" font-family="IBM Plex Mono">${d[1]}</text>
+    `).join('')}`,"0 0 300 130"); }
+};
+</script>
+<script>
+/* ================= APP ENGINE ================= */
+const LS_KEY = 'formation_robot_ia_v1';
+let DB = null, USER = null, ARTIFACT_OWNER = false;
+
+const State = {
+  name: '',
+  currentModuleId: null,
+  completedModules: {},
+  exerciseAnswers: {},
+  session: 1,
+  quiz: { active:false, questions:[], index:0, answers:[], attempt:1 },
+  quizAttempts: [],
+  theme: 'dark'
+};
+
+function saveLocal(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(State)); }catch(e){}
+}
+function loadLocal(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(raw){ Object.assign(State, JSON.parse(raw)); return true; }
+  }catch(e){}
+  return false;
+}
+async function syncToCloud(){
+  const dot = document.getElementById('sync-dot'), txt = document.getElementById('sync-text');
+  if(!DB){ if(dot){dot.className='sync-dot off';} if(txt) txt.textContent='local uniquement'; return; }
+  try{
+    await DB.doc('etudiants_robotia/' + slug(State.name)).set({
+      nom: State.name,
+      progression: Math.round(progressPct()),
+      modulesTermines: Object.keys(State.completedModules).length,
+      quizTentatives: State.quizAttempts,
+      dernierePosition: State.currentModuleId,
+      miseAJour: new Date().toISOString()
+    });
+    if(dot) dot.className='sync-dot ok';
+    if(txt) txt.textContent='synchronisé';
+  }catch(e){
+    if(dot) dot.className='sync-dot off';
+    if(txt) txt.textContent='local uniquement';
+  }
+}
+function copyResultSummary(score, pass, attempt){
+  const txt = `Formation Robotique & IA\nÉtudiant : ${State.name}\nTentative : ${attempt}/2\nScore : ${score}%\nRésultat : ${pass?'RÉUSSI ✅':'À REPRENDRE'}\nDate : ${new Date().toLocaleString('fr-FR')}`;
+  navigator.clipboard.writeText(txt).then(()=>{
+    const el = document.getElementById('copy-feedback');
+    if(el) el.textContent = 'Copié ! Collez-le dans votre message au formateur.';
+  }).catch(()=>{
+    const el = document.getElementById('copy-feedback');
+    if(el) el.textContent = 'Impossible de copier automatiquement — notez votre score ci-dessus.';
+  });
+}
+function slug(s){ return (s||'anonyme').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') || 'anonyme'; }
+
+function progressPct(){
+  const total = window.MODULES.length;
+  const done = Object.keys(State.completedModules).length;
+  return total ? (done/total*100) : 0;
+}
+
+const App = {
+  async init(){
+    try{
+      if(window.claude && window.claude.use){
+        DB = await window.claude.use('db').catch(()=>null);
+        USER = await window.claude.use('user').catch(()=>null);
+        if(USER){ ARTIFACT_OWNER = await USER.isOwner().catch(()=>false); }
+      }
+    }catch(e){}
+    document.getElementById('hero-art').innerHTML = buildHeroArt();
+    if(loadLocal() && State.name){
+      this.enterApp();
+    }
+  },
+  goTrainer(){
+    document.getElementById('view-landing').classList.add('hidden');
+    document.getElementById('view-trainer').classList.remove('hidden');
+    const img = document.getElementById('trainer-photo');
+    img.src = 'data:image/jpeg;base64,' + window.TRAINER_PHOTO_B64;
+    window.scrollTo(0,0);
+  },
+  openLightbox(){
+    document.getElementById('lightbox-img').src = document.getElementById('trainer-photo').src;
+    document.getElementById('lightbox').classList.add('open');
+  },
+  goRegister(){
+    document.getElementById('view-trainer').classList.add('hidden');
+    document.getElementById('view-landing').classList.add('hidden');
+    document.getElementById('view-register').classList.remove('hidden');
+    setTimeout(()=>document.getElementById('reg-name').focus(), 50);
+  },
+  register(){
+    const val = document.getElementById('reg-name').value.trim();
+    if(!val){ document.getElementById('reg-name').style.borderColor='var(--bad)'; return; }
+    State.name = val;
+    saveLocal();
+    this.enterApp();
+    syncToCloud();
+  },
+  enterApp(){
+    document.getElementById('view-landing').classList.add('hidden');
+    document.getElementById('view-register').classList.add('hidden');
+    document.getElementById('app').classList.add('active');
+    document.getElementById('side-name').textContent = State.name;
+    this.buildNav();
+    this.updateProgressUI();
+    const target = State.currentModuleId || (window.MODULES[0] && window.MODULES[0].id);
+    this.openModule(target, true);
+    syncToCloud();
+  },
+  toggleSidebar(open){
+    document.getElementById('sidebar').classList.toggle('open', open);
+    document.getElementById('side-overlay').classList.toggle('open', open);
+  },
+  toggleTheme(){
+    const root = document.documentElement;
+    const cur = root.getAttribute('data-theme') || 'dark';
+    root.setAttribute('data-theme', cur==='dark' ? 'light' : 'dark');
+  },
+  buildNav(){
+    const el = document.getElementById('nav-container');
+    let html = '';
+    let lastSession = null;
+    window.MODULES.forEach((m, i) => {
+      if(m.session !== lastSession){
+        html += `<div class="session-block"><div class="session-title">${m.sessionLabel}</div></div>`;
+        lastSession = m.session;
+      }
+      const done = !!State.completedModules[m.id];
+      const locked = i>0 && !State.completedModules[window.MODULES[i-1].id] && !done && m.id !== State.currentModuleId;
+      const icon = done ? '✓' : (locked ? '🔒' : '○');
+      html += `<div class="nav-item ${locked?'locked':''}" data-mid="${m.id}" onclick="${locked?'':`App.openModule('${m.id}')`}">
+        <span class="num">${String(i+1).padStart(2,'0')}</span><span class="ico">${icon}</span><span>${m.navTitle||m.title}</span>
+      </div>`;
+    });
+    html += `<div class="session-block"><div class="session-title">Évaluation</div></div>
+      <div class="nav-item" data-mid="__revision" onclick="App.openRevision()"><span class="num">•</span><span class="ico">📘</span><span>Révision</span></div>
+      <div class="nav-item" data-mid="__quiz" onclick="App.tryOpenQuiz()"><span class="num">•</span><span class="ico">📝</span><span>Quiz final</span></div>`;
+    if(ARTIFACT_OWNER){
+      html += `<div class="session-block"><div class="session-title">Administration</div></div>
+        <div class="nav-item" data-mid="__admin" onclick="App.openAdmin()"><span class="num">•</span><span class="ico">🛡️</span><span>Notes des étudiants</span></div>`;
+    }
+    el.innerHTML = html;
+  },
+  updateProgressUI(){
+    const pct = progressPct();
+    document.getElementById('progress-fill').style.width = pct+'%';
+    document.getElementById('progress-pct').textContent = Math.round(pct)+'%';
+  },
+  markActiveNav(mid){
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', mid!==null && n.dataset.mid===mid));
+  },
+  openModule(mid, skipHistory){
+    const m = window.MODULES.find(x=>x.id===mid);
+    if(!m) return;
+    State.currentModuleId = mid;
+    saveLocal();
+    this.markActiveNav(mid);
+    document.getElementById('content').innerHTML = renderModule(m);
+    document.getElementById('tb-title').textContent = m.title;
+    document.getElementById('content').scrollTop = 0;
+    window.scrollTo(0,0);
+    this.toggleSidebar(false);
+  },
+  completeModule(mid){
+    State.completedModules[mid] = true;
+    saveLocal();
+    this.buildNav();
+    this.updateProgressUI();
+    syncToCloud();
+    const idx = window.MODULES.findIndex(m=>m.id===mid);
+    const cur = window.MODULES[idx];
+    const next = window.MODULES[idx+1];
+    if(next && next.session !== cur.session){
+      this.showPause(next.id, cur.session);
+    } else if(next){
+      this.openModule(next.id);
+    } else {
+      this.openRevision();
+    }
+  },
+  showPause(nextId, finishedSession){
+    this.markActiveNav(null);
+    const icons = ['☕','🍽️','☕'];
+    document.getElementById('content').innerHTML = `
+      <div class="pause-screen">
+        <div class="pause-icon">${icons[finishedSession-1]||'☕'}</div>
+        <h2>Pause recommandée</h2>
+        <p style="color:var(--muted);">Vous venez de terminer la Session ${finishedSession}. Prenez quelques minutes avant de continuer.</p>
+        <button class="btn" style="margin-top:20px;" onclick="App.openModule('${nextId}')">Continuer →</button>
+      </div>`;
+    document.getElementById('tb-title').textContent = 'Pause';
+    window.scrollTo(0,0);
+  },
+  tryOpenQuiz(){
+    const allDone = window.MODULES.every(m=>State.completedModules[m.id]);
+    if(!allDone){ alert("Terminez tous les modules avant d'accéder au quiz final."); return; }
+    this.openQuiz();
+  },
+  openRevision(){
+    this.markActiveNav('__revision');
+    document.getElementById('content').innerHTML = renderRevision();
+    document.getElementById('tb-title').textContent = 'Révision';
+    window.scrollTo(0,0);
+    this.toggleSidebar(false);
+  },
+  openQuiz(){
+    const attemptsUsed = State.quizAttempts.length;
+    if(attemptsUsed >= 2){
+      this.markActiveNav('__quiz');
+      document.getElementById('content').innerHTML = renderQuizLocked();
+      return;
+    }
+    const pool = [...window.QUESTIONS];
+    shuffle(pool);
+    const n = Math.min(28, pool.length);
+    State.quiz = { active:true, questions: pool.slice(0,n).map(q=>({...q, shuffledOptions: shuffleOptions(q)})), index:0, answers: new Array(n).fill(null), attempt: attemptsUsed+1 };
+    this.markActiveNav('__quiz');
+    this.renderQuizQuestion();
+  },
+  renderQuizQuestion(){
+    document.getElementById('content').innerHTML = renderQuiz();
+    document.getElementById('tb-title').textContent = 'Quiz final — question ' + (State.quiz.index+1) + '/' + State.quiz.questions.length;
+    window.scrollTo(0,0);
+  },
+  quizSelect(optIdx){
+    State.quiz.answers[State.quiz.index] = optIdx;
+    this.renderQuizQuestion();
+  },
+  quizNav(dir){
+    const q = State.quiz;
+    q.index = Math.max(0, Math.min(q.questions.length-1, q.index+dir));
+    this.renderQuizQuestion();
+  },
+  quizJump(i){ State.quiz.index = i; this.renderQuizQuestion(); },
+  quizSubmit(){
+    const q = State.quiz;
+    const unanswered = q.answers.filter(a=>a===null).length;
+    if(unanswered>0 && !confirm(unanswered+' question(s) sans réponse. Soumettre quand même ?')) return;
+    let correct = 0;
+    const wrongTopics = new Set();
+    q.questions.forEach((qq,i)=>{
+      const given = q.answers[i];
+      const givenId = given!==null ? qq.shuffledOptions[given].id : null;
+      if(givenId === qq.correct) correct++;
+      else wrongTopics.add(qq.topic);
+    });
+    const score = Math.round(correct / q.questions.length * 100);
+    const pass = score >= 75;
+    State.quizAttempts.push({score, pass, date:new Date().toISOString()});
+    q.active = false;
+    saveLocal();
+    syncToCloud();
+    document.getElementById('content').innerHTML = renderQuizResult(score, pass, [...wrongTopics]);
+    document.getElementById('tb-title').textContent = 'Résultat du quiz';
+    window.scrollTo(0,0);
+  },
+  runExercise(mid, exoIdx, chosenIdx, btnEl){
+    const m = window.MODULES.find(x=>x.id===mid);
+    const exo = m.exercise;
+    const box = btnEl.closest('.exo-box');
+    box.querySelectorAll('.exo-choice').forEach((b,i)=>{
+      b.classList.remove('correct','wrong');
+      if(i===exo.correct) b.classList.add('correct');
+      else if(i===chosenIdx) b.classList.add('wrong');
+      b.onclick = null;
+      b.style.cursor='default';
+    });
+    const fb = box.querySelector('.exo-feedback');
+    fb.classList.add('show');
+    fb.classList.add(chosenIdx===exo.correct ? 'ok' : 'bad');
+    fb.textContent = (chosenIdx===exo.correct ? '✓ Correct — ' : '✗ Pas tout à fait — ') + exo.explanation;
+    State.exerciseAnswers[mid+'_0'] = true;
+    saveLocal();
+  },
+  async openAdmin(){
+    this.markActiveNav('__admin');
+    document.getElementById('tb-title').textContent = 'Administration — Notes des étudiants';
+    if(!ARTIFACT_OWNER){
+      document.getElementById('content').innerHTML = `<div class="admin-lock"><div style="font-size:40px;">🔒</div><h2>Accès réservé</h2><p style="color:var(--muted);">Cette page est réservée au formateur.</p></div>`;
+      return;
+    }
+    document.getElementById('content').innerHTML = `<div class="module-kicker">ADMINISTRATION</div><h1 class="module-title">Notes des étudiants</h1><p class="module-sub">Chargement en cours...</p>`;
+    if(!DB){
+      document.getElementById('content').innerHTML = renderAdminError();
+      return;
+    }
+    try{
+      const list = await DB.collection('etudiants_robotia').get();
+      document.getElementById('content').innerHTML = renderAdmin(list);
+    }catch(e){
+      document.getElementById('content').innerHTML = renderAdminError();
+    }
+  }
+};
+
+function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+function shuffleOptions(q){ const opts = q.options.map((text,i)=>({id:i, text})); shuffle(opts); return opts; }
+
+function buildHeroArt(){
+  return SVG.wrap(`
+    <circle cx="150" cy="50" r="24" stroke="#4f8cff" stroke-width="2.5"/>
+    <circle cx="140" cy="45" r="4" fill="#4f8cff"/><circle cx="160" cy="45" r="4" fill="#4f8cff"/>
+    <line x1="150" y1="74" x2="150" y2="110" stroke="#a56eff" stroke-width="3"/>
+    <rect x="110" y="110" width="80" height="40" rx="8" stroke="#a56eff" stroke-width="2.5"/>
+    <line x1="110" y1="125" x2="70" y2="150" stroke="#e0b34a" stroke-width="3"/>
+    <line x1="190" y1="125" x2="230" y2="150" stroke="#e0b34a" stroke-width="3"/>
+    <circle cx="80" cy="60" r="3" fill="#52b788"/><circle cx="220" cy="60" r="3" fill="#52b788"/><circle cx="60" cy="100" r="3" fill="#52b788"/>
+    <path d="M80 60 Q115 40 140 48" stroke="#52b788" stroke-width="1" stroke-dasharray="2,3"/>
+    <path d="M220 60 Q185 40 160 48" stroke="#52b788" stroke-width="1" stroke-dasharray="2,3"/>
+  `, "0 0 300 160");
+}
+
+/* ---------- Renderers filled in below ---------- */
+</script>
+<script>
+/* ============= RENDER FUNCTIONS (module/quiz/revision/admin) ============= */
+
+function renderModule(m){
+  let html = `
+    <div class="module-kicker">SESSION ${m.session} · MODULE ${String(m.num).padStart(2,'0')}/16</div>
+    <h1 class="module-title">${m.title}</h1>
+    <p class="module-sub">${m.sessionLabel}</p>
+
+    <div class="block"><h3>Qu'est-ce que c'est ?</h3><p>${m.quoi}</p></div>
+    <div class="block"><h3>À quoi ça sert ?</h3><p>${m.aquoi}</p></div>
+    <div class="block"><h3>Comment ça fonctionne ?</h3><p>${m.comment}</p></div>
+  `;
+
+  if(m.diagrams && m.diagrams.length){
+    html += `<div class="block"><h3>Schéma</h3>`;
+    m.diagrams.forEach(d=>{
+      html += `<div class="diagram-box">${SVG[d.key]()}</div><div class="diagram-cap">${d.caption}</div>`;
+    });
+    html += `</div>`;
+  }
+
+  if(m.materials && m.materials.length){
+    html += `<div class="block"><h3>À reconnaître</h3><div class="material-grid">`;
+    m.materials.forEach(mat=>{
+      html += `<div class="material-card">${SVG[mat.key]()}<div class="mname">${mat.name}</div><div class="mrole">${mat.role}</div></div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  html += `<div class="block"><div class="example-box">${m.example}</div></div>`;
+
+  html += `
+    <div class="block exo-box">
+      <span class="practice-tag">MINI-EXERCICE · ne compte pas pour le quiz</span>
+      <div class="exo-q">${m.exercise.question}</div>
+      <div class="exo-choices">
+        ${m.exercise.options.map((opt,i)=>`<button class="exo-choice" onclick="App.runExercise('${m.id}',0,${i},this)">${opt}</button>`).join('')}
+      </div>
+      <div class="exo-feedback"></div>
+    </div>
+  `;
+
+  html += `<div class="block"><h3>À quoi cela servira en pratique</h3><p>${m.practice}</p></div>`;
+
+  const idx = window.MODULES.findIndex(x=>x.id===m.id);
+  const prev = window.MODULES[idx-1];
+  html += `<div class="nav-buttons">
+      ${prev ? `<button class="btn secondary" onclick="App.openModule('${prev.id}')">← Module précédent</button>` : `<span></span>`}
+      <button class="btn" onclick="App.completeModule('${m.id}')">Marquer terminé &amp; continuer →</button>
+    </div>`;
+
+  return html;
+}
+
+function renderRevision(){
+  return `
+    <div class="module-kicker">AVANT LE QUIZ</div>
+    <h1 class="module-title">Vous avez terminé le cours 🎉</h1>
+    <p class="module-sub">Une révision rapide avant l'évaluation finale.</p>
+
+    <div class="rev-grid">
+      <div class="rev-card"><h4>🤖 Anatomie d'un robot</h4><ul>
+        <li>Contrôleur : le "cerveau"</li>
+        <li>Capteurs : perçoivent l'environnement</li>
+        <li>Actionneurs : produisent le mouvement</li>
+        <li>Effecteurs : interagissent avec l'objet</li>
+      </ul></div>
+      <div class="rev-card"><h4>🦾 Types de manipulateurs</h4><ul>
+        <li>Cartésien, cylindrique, sphérique</li>
+        <li>SCARA : bras horizontal articulé</li>
+        <li>Anthropomorphe : imite le bras humain</li>
+      </ul></div>
+      <div class="rev-card"><h4>⚙️ Actionneurs</h4><ul>
+        <li>Moteur DC : rotation continue</li>
+        <li>Servomoteur : angle précis</li>
+        <li>Moteur pas-à-pas : mouvement précis par pas</li>
+      </ul></div>
+      <div class="rev-card"><h4>🧠 IA, ML, Deep Learning</h4><ul>
+        <li>IA : le domaine le plus large</li>
+        <li>Machine Learning : apprentissage à partir de données</li>
+        <li>Deep Learning : réseaux de neurones profonds</li>
+      </ul></div>
+      <div class="rev-card"><h4>👁️ Vision &amp; langage</h4><ul>
+        <li>Vision par ordinateur : détecter/reconnaître des objets</li>
+        <li>NLP : comprendre et produire du langage</li>
+      </ul></div>
+      <div class="rev-card"><h4>📡 IA embarquée</h4><ul>
+        <li>Modèle léger exécuté directement sur l'appareil</li>
+        <li>Pas besoin d'internet pour fonctionner</li>
+        <li>Raspberry Pi : plateforme courante pour l'IA embarquée</li>
+      </ul></div>
+    </div>
+
+    <div class="center" style="margin-top:36px;">
+      <p style="color:var(--muted);">Êtes-vous prêt pour l'évaluation ?</p>
+      <button class="btn" onclick="App.openQuiz()">Commencer le quiz final</button>
+    </div>
+  `;
+}
+
+function renderQuiz(){
+  const q = State.quiz;
+  const cur = q.questions[q.index];
+  return `
+    <div class="module-kicker">QUIZ FINAL · TENTATIVE ${q.attempt}/2</div>
+    <h1 class="module-title" style="font-size:22px;">Question ${q.index+1} sur ${q.questions.length}</h1>
+    <div class="quiz-progress">
+      ${q.questions.map((_,i)=>`<div class="quiz-dot ${q.answers[i]!==null?'answered':''} ${i===q.index?'current':''}" onclick="App.quizJump(${i})"></div>`).join('')}
+    </div>
+    <div class="panel">
+      <div class="quiz-q-num">${cur.topic}</div>
+      <div class="exo-q" style="font-size:18px;margin-bottom:18px;">${cur.question}</div>
+      <div class="exo-choices">
+        ${cur.shuffledOptions.map((opt,i)=>`<button class="exo-choice ${q.answers[q.index]===i?'correct':''}" style="${q.answers[q.index]===i?'border-color:var(--blue);background:var(--panel2);':''}" onclick="App.quizSelect(${i})">${opt.text}</button>`).join('')}
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn secondary" ${q.index===0?'disabled':''} onclick="App.quizNav(-1)">← Précédente</button>
+      ${q.index===q.questions.length-1
+        ? `<button class="btn" onclick="App.quizSubmit()">Soumettre le quiz</button>`
+        : `<button class="btn" onclick="App.quizNav(1)">Suivante →</button>`}
+    </div>
+  `;
+}
+
+function renderQuizResult(score, pass, wrongTopics){
+  return `
+    <div class="result-hero">
+      ${pass ? `<div style="font-size:40px;">🎉</div><h2>BRAVO ${State.name.toUpperCase()} !</h2>` : `<div style="font-size:40px;">📋</div><h2>Résultat</h2>`}
+      <div class="result-score ${pass?'pass':'fail'}">${score}%</div>
+      ${pass
+        ? `<p>Vous avez réussi la formation Robotique &amp; Intelligence Artificielle. 🤖🧠</p>`
+        : `<p>Il vous faut au moins 75% pour valider. ${State.quizAttempts.length<2 ? "Il vous reste une tentative." : "Vos deux tentatives ont été utilisées. Veuillez contacter le formateur."}</p>
+           ${wrongTopics.length? `<div class="topic-tags">${wrongTopics.map(t=>`<span>${t}</span>`).join('')}</div>`:''}`
+      }
+      <div style="margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn ghost" onclick="copyResultSummary(${score},${pass},${State.quizAttempts.length})">📋 Copier mon résultat</button>
+        ${pass ? '' : (State.quizAttempts.length<2 ? `<button class="btn" onclick="App.openQuiz()">Reprendre le quiz</button>` : `<button class="btn secondary" onclick="App.openRevision()">Retour à la révision</button>`)}
+        ${pass ? `<button class="btn secondary" onclick="App.openRevision()">Retour à la révision</button>` : ''}
+      </div>
+      <p id="copy-feedback" style="color:var(--muted);font-size:13px;margin-top:14px;">Envoyez ce résultat copié à votre formateur (WhatsApp/message) pour qu'il enregistre votre note.</p>
+    </div>
+  `;
+}
+
+function renderQuizLocked(){
+  return `
+    <div class="result-hero">
+      <div style="font-size:40px;">🔒</div>
+      <h2>Tentatives épuisées</h2>
+      <p>Vos deux tentatives ont été utilisées.<br>Veuillez contacter le formateur, Carlos Yfrazin, pour la suite.</p>
+    </div>
+  `;
+}
+
+function renderAdmin(list){
+  const items = (list && list.docs) ? list.docs : (Array.isArray(list) ? list : []);
+  if(!items.length){
+    return `<div class="module-kicker">ADMINISTRATION</div><h1 class="module-title">Notes des étudiants</h1>
+      <p style="color:var(--muted);">Aucun étudiant n'a encore été enregistré via la synchronisation en ligne.</p>
+      ${renderAdminNote()}`;
+  }
+  const rows = items.map(d=>{
+    const v = d.data ? d.data() : d;
+    const attempts = (v.quizTentatives||[]);
+    const best = attempts.length ? Math.max(...attempts.map(a=>a.score||0)) : null;
+    const pass = attempts.some(a=>a.pass);
+    return `<tr>
+      <td>${v.nom||'—'}</td>
+      <td>${v.progression!=null?v.progression+'%':'—'}</td>
+      <td>${v.modulesTermines!=null?v.modulesTermines+'/16':'—'}</td>
+      <td>${attempts.length}</td>
+      <td>${best!=null?best+'%':'—'}</td>
+      <td>${pass?'✅ Réussi':(attempts.length?'❌ À reprendre':'—')}</td>
+      <td style="font-size:11px;color:var(--muted);">${v.miseAJour?new Date(v.miseAJour).toLocaleString('fr-FR'):'—'}</td>
+    </tr>`;
+  }).join('');
+  return `
+    <div class="module-kicker">ADMINISTRATION</div>
+    <h1 class="module-title">Notes des étudiants</h1>
+    <p class="module-sub">${items.length} étudiant(s) synchronisé(s). Cette liste ne reflète que les étudiants dont la synchronisation en ligne a réussi — voir la note ci-dessous.</p>
+    <div style="overflow-x:auto;"><table class="admin-table">
+      <tr><th>Nom</th><th>Progression</th><th>Modules</th><th>Tentatives</th><th>Meilleur score</th><th>Statut</th><th>Dernière MAJ</th></tr>
+      ${rows}
+    </table></div>
+    ${renderAdminNote()}
+  `;
+}
+
+function renderAdminError(){
+  return `<div class="module-kicker">ADMINISTRATION</div><h1 class="module-title">Notes des étudiants</h1>
+    <p style="color:var(--muted);">La synchronisation en ligne n'est pas disponible dans ce contexte.</p>
+    ${renderAdminNote()}`;
+}
+
+function renderAdminNote(){
+  return `<div class="example-box" style="margin-top:20px;"><b>Note</b> — la synchronisation automatique ne fonctionne de façon fiable que pour les étudiants connectés dans votre organisation Claude. Pour les étudiants externes (lien envoyé par WhatsApp/e-mail), demandez-leur d'utiliser le bouton <b>« Copier mon résultat »</b> à la fin du quiz et de vous l'envoyer directement — c'est la méthode la plus fiable pour centraliser toutes les notes.</div>`;
+}
+
+document.addEventListener('DOMContentLoaded', () => App.init());
+</script>
+</body>
+</html>
